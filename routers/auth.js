@@ -73,7 +73,7 @@ authrouter.post("/api/signin", async (req, res) => {
 
 
 
-authrouter.post("/api/getData", auth, async (req, res) => {
+authrouter.get("/api/getData", auth, async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({
     email: email
