@@ -6,7 +6,7 @@ const auth = require("../middlewares/authMiddleware")
 const authrouter = express.Router();
 const jwt = require("jsonwebtoken")
 
-authrouter.get("/",async (res,res)=>{
+authrouter.get("/",async (req,res)=>{
   res.status(200).json({msg:"Hii,welcome to achieve jee server"})
 })
 authrouter.post("/api/signup", async (req, res) => {
