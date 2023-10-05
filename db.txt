@@ -1,0 +1,51 @@
+transaction->
+
+  _id: new ObjectId("648fefd8a034e9b210a81a7a"),
+  school: new ObjectId("63ff2138742d8bdfbc91d5c9"),
+  invoice: new ObjectId("648fefd8a034e9b210a81a78"),
+  status: 'FAILED',
+  amount: 0,
+  breakup: '{"unpaid_fines":[],"amount":0,"applied_discounts":[],"installments_to_pay":[]}',
+  payment_mode: 'ONLINE',
+  createdAt: 2023-06-19T06:04:08.220Z,
+  updatedAt: 2023-07-12T08:39:45.325Z,
+  __v: 0
+
+
+  payments->
+
+  
+  _id: new ObjectId("642612308b8737a722a4a2ea"),
+  fee_head: new ObjectId("63ffcafdda0794de7ca2bf5e"),
+  student: new ObjectId("63ffd33a9ad5575e50efb4d2"),
+  due_date: 2023-04-16T18:30:00.000Z,
+  timestamp: 2023-03-30T22:50:24.852Z,
+  __v: 0
+
+
+invoice->
+
+ _id: new ObjectId("6429f2a857dae46e1780be4f"),
+  dues: [ new ObjectId("6429f2a857dae46e1780be4d") ],
+  status: 'paid',
+  payments: [ new ObjectId("6429f2a857dae46e1780be53") ],
+  student: new ObjectId("63ffd33a9ad5575e50efb4d2"),
+  school: new ObjectId("63ff2138742d8bdfbc91d5c9"),
+  fine_days: 184,
+  fine_amount: 2208,
+  timestamp: 2023-04-02T21:24:56.703Z,
+  fee_breakup: '{"Sat Sep 17 2022 00:00:00 GMT+0530 (India Standard Time)":{"Registration Fee":25}}',
+  fee_total: 25,
+  createdAt: 2023-04-02T21:24:56.705Z,
+  updatedAt: 2023-04-02T21:24:56.899Z,
+  __v: 0
+
+
+  dues->
+  
+  _id: new ObjectId("6425a1c8bd324d55e5761bea"),
+  fee_head: new ObjectId("63ffcb09da0794de7ca2bf61"),
+  student: new ObjectId("63ffd33a9ad5575e50efb4d2"),
+  due_date: 2023-04-16T18:30:00.000Z,
+  timestamp: 2023-03-30T14:50:48.357Z,
+  __v: 0
