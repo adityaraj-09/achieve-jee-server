@@ -1,0 +1,99 @@
+65229482f06dad0af7b8739c
+
+transaction->
+
+  _id: new ObjectId("648fefd8a034e9b210a81a7a"),
+  school: new ObjectId("63ff2138742d8bdfbc91d5c9"),
+  invoice: new ObjectId("648fefd8a034e9b210a81a78"),
+  status: 'FAILED',
+  amount: 0,
+  breakup: '{"unpaid_fines":[],"amount":0,"applied_discounts":[],"installments_to_pay":[]}',
+  payment_mode: 'ONLINE',
+  createdAt: 2023-06-19T06:04:08.220Z,
+  updatedAt: 2023-07-12T08:39:45.325Z,
+  __v: 0
+
+
+  payments->
+
+  
+  _id: new ObjectId("642612308b8737a722a4a2ea"),
+  fee_head: new ObjectId("63ffcafdda0794de7ca2bf5e"),
+  student: new ObjectId("63ffd33a9ad5575e50efb4d2"),
+  due_date: 2023-04-16T18:30:00.000Z,
+  timestamp: 2023-03-30T22:50:24.852Z,
+  __v: 0
+
+
+invoice->
+
+ _id: new ObjectId("6429f2a857dae46e1780be4f"),
+  dues: [ new ObjectId("6429f2a857dae46e1780be4d") ],
+  status: 'paid',
+  payments: [ new ObjectId("6429f2a857dae46e1780be53") ],
+  student: new ObjectId("63ffd33a9ad5575e50efb4d2"),
+  school: new ObjectId("63ff2138742d8bdfbc91d5c9"),
+  fine_days: 184,
+  fine_amount: 2208,
+  timestamp: 2023-04-02T21:24:56.703Z,
+  fee_breakup: '{"Sat Sep 17 2022 00:00:00 GMT+0530 (India Standard Time)":{"Registration Fee":25}}',
+  fee_total: 25,
+  createdAt: 2023-04-02T21:24:56.705Z,
+  updatedAt: 2023-04-02T21:24:56.899Z,
+  __v: 0
+
+
+  dues->
+  
+  _id: new ObjectId("6425a1c8bd324d55e5761bea"),
+  fee_head: new ObjectId("63ffcb09da0794de7ca2bf61"),
+  student: new ObjectId("63ffd33a9ad5575e50efb4d2"),
+  due_date: 2023-04-16T18:30:00.000Z,
+  timestamp: 2023-03-30T14:50:48.357Z,
+  __v: 0
+
+
+  student->
+  _id: new ObjectId("644bc3a14b084f5f877eb32e"),
+    name: '11may',
+    phone_number: [ '7988476' ],
+    edviron_id: 93,
+    school_generated_id: '11',
+    school_id: new ObjectId("63ff2138742d8bdfbc91d5c9"),
+    class: '4',
+    section: 'f',
+    category: 'st',
+    dob: 1999-09-30T18:30:00.000Z,
+    gender: 'male',
+    father_name: 'father_name',
+    previous_session_dues: 0,
+    createdAt: 2023-04-28T13:01:21.773Z,
+    updatedAt: 2023-04-28T13:01:21.773Z,
+    __v: 0
+
+    fines-
+
+    
+    _id: new ObjectId("646df8b4e3a87d07defb24e2"),
+    fine_name: 'fine for today',
+    fine_amount: '2000002',
+    student: new ObjectId("645a7a0c47ed4f04f42f1360"),
+    admin: new ObjectId("6454b7e92af456275469f0ab"),
+    school: new ObjectId("6454b7e92af456275469f0a9"),
+    paid: true,
+    createdAt: 2023-05-24T11:44:52.334Z,
+    updatedAt: 2023-05-24T11:45:08.252Z,
+    __v: 0
+
+    section->
+
+     _id: new ObjectId("64b19fa69e9f35af91029120"),
+    class: '8',
+    section: 'C',
+    school_id: new ObjectId("64b1976f9e9f35af91028bcb"),
+    fine_per_day: 10,
+    fine_grace_period: 5,
+    fine_after_grace_period: 500,
+    createdAt: 2023-07-14T19:19:02.170Z,
+    updatedAt: 2023-07-14T19:38:43.201Z,
+    __v: 0
