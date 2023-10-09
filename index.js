@@ -3,8 +3,6 @@ const mongoose=require("mongoose")
 const cors =require("cors");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-
-const { ObjectId } = require("mongodb");
 const PORT =8000
 
 const adminrouter=require("./routers/admin")
