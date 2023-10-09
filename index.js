@@ -17,7 +17,7 @@ const httpserver=new createServer(app)
 const io=new Server(httpserver,{})
 
 
-mongoose.connect(DB).then(async()=>{
+mongoose.connect(DB,{ useFindAndModify: false }).then(async()=>{
     console.log("connected to mongodb")
 }).catch((e) => {
     console.log(e);
