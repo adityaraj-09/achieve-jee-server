@@ -1,4 +1,6 @@
 const mongoose= require("mongoose");
+const attemptSchema = require("./attempt");
+const markSchema = require("./marks");
 
 
 
@@ -45,9 +47,15 @@ const userSchema=mongoose.Schema({
         type: String,
         default: "",
     },
-    
-    
-      
+    attempts:[
+        {
+            details:attemptSchema,
+            markedAns:{
+                type:Array,
+                default:[]
+            }
+        }
+    ]
 });
 
 

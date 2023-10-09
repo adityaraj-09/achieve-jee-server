@@ -61,10 +61,8 @@ authrouter.post("/api/signin", async (req, res) => {
       return res.status(400).json({ msg: "password not correct" });
     }
 
-    const token = jwt.sign({ id: user._id }, "adityaMalekith09", { expiresIn: '15m' });
+    const token = jwt.sign({ id: user._id }, "adityaMalekith09", { expiresIn: '24h' });
    
-
-  
     return res.status(200).json({...user._doc,token})
 
   } catch (error) {

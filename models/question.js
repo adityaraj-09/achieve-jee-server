@@ -23,7 +23,7 @@ const questionschema=mongoose.Schema({
         type:Array
     },
     subject:{
-        required:true,
+        required:true,//p-0,c-1
         type:Number
     },
     imageurl:{

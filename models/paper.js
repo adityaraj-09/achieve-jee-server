@@ -9,11 +9,11 @@ const paperschema=mongoose.Schema({
         required:true,
         type:String
     },
-    for:{
+    exam:{
         required:true,
         type:Number // jee Advanced-0, jee main-1
     },
-    questions_no:{
+    total_q:{
         required:true,
         type:Number
     },
@@ -22,12 +22,12 @@ const paperschema=mongoose.Schema({
         type:Number
     }
     ,
-    questions:{
+    qs:{
         type:Array,
         default:[]
     },
     createdAt:{
-       
+       type:Date
     }
 
     
