@@ -3,7 +3,7 @@ const mongoose= require("mongoose");
 
 const attemptSchema=mongoose.Schema({
     paperId:{
-        type:string,
+        type:String,
         required:true
     },
     startTime:{
