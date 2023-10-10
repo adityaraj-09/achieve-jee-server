@@ -19,7 +19,7 @@ router.get("/api/get-paper/:id",auth,async (req,res)=>{
     }
 })
 
-router.get("/api/papers",auth,async (req,res)=>{
+router.get("/api/papers",async (req,res)=>{
     try {
         const papers=await Paper.find()
         res.json(papers)
@@ -32,16 +32,16 @@ router.get("/api/papers",auth,async (req,res)=>{
 router.get("/api/start-paper/:id",auth,async (req,res)=>{
     try {
 
-        let id=req.params
+        let {id}=req.params
         const paper=await Paper.findById(id)
         const qids=paper.qs
         let ques=[];
         for (let i = 0; i < qids.length; i++) {
-            const q = await Question.findById(array[i]) 
+            const q = await Question.findById(qids[i]) 
             ques.push(q.toJSON())
             
         }
-        res.status(200).json({...paper,ques})
+        res.status(200).json(ques)
         
     } catch (error) {
         res.status(500).json({error:error.message})
