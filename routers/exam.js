@@ -19,6 +19,15 @@ router.get("/api/get-paper/:id",auth,async (req,res)=>{
     }
 })
 
+router.get("/api/papers",auth,async (req,res)=>{
+    try {
+        const papers=await Paper.find()
+        res.json(papers)
+    } catch (error) {
+        res.status(500).json({error:error.message});
+    }
+})
+
 
 router.get("/api/start-paper/:id",auth,async (req,res)=>{
     try {

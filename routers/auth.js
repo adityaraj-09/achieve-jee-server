@@ -116,16 +116,10 @@ authrouter.post("/api/istokenvalid", async (req, res) => {
 
 authrouter.post('/api/refresh', (req, res) => {
   if (req.cookies?.jwt) {
-
-      // Destructuring refreshToken from cookie
       const refreshToken = req.cookies.jwt;
-
-      // Verifying refresh token
       jwt.verify(refreshToken,"rishabhMalekith09", 
       (err, decoded) => {
           if (err) {
-
-              // Wrong Refesh Token
               return res.status(406).json({ message: 'Unauthorized' });
           }
           else {
