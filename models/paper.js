@@ -27,7 +27,7 @@ const paperschema=mongoose.Schema({
         default:[]
     },
     createdAt:{
-       type:Date
+       type:Number
     }
 
     

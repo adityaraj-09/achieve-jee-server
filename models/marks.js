@@ -7,15 +7,18 @@ const markSchema=mongoose.Schema({
         default:0
     },
     phy:{
-        type:Number
+        type:Number,
+        default:0
     }
     ,
     chem:{
-        type:Number
+        type:Number,
+        default:0
     }
     ,
     math:{
-        type:Number
+        type:Number,
+        default:0
     },
     markedAns:{
         type:Array, //{"q_id":"nsnnc5cs5cs6cbzz",marked:[1]}

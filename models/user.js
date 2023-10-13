@@ -48,13 +48,25 @@ const userSchema=mongoose.Schema({
         default: "",
     },
     attempts:[
-        {
-            details:attemptSchema,
-            markedAns:{
+        { paperId:{
+            type:String,
+            required:true
+        },
+        startTime:{
+            type:Number,
+            required:true
+        },
+        finishTime:{
+            type:Number,
+            default:0  
+        },
+            
+        markedAns:{
                 type:Array,
                 default:[]
-            }
-        }
+            },
+        marks: markSchema 
+    }
     ]
 });
 

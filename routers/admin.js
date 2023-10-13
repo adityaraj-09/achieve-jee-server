@@ -96,7 +96,7 @@ adminrouter.post("/api/add-Paper",async (req,res)=>{
         const {category,title,exam,total_q,marks,qs}=req.body
 
         let p=new Paper({
-            category,title,exam,total_q,marks,qs,createdAt:new Date()
+            category,title,exam,total_q,marks,qs,createdAt:new Date().getTime()
         })
         p=await p.save()
         res.status(200).json(p)

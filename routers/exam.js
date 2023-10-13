@@ -19,7 +19,7 @@ router.get("/api/get-paper/:id",auth,async (req,res)=>{
     }
 })
 
-router.get("/api/papers",async (req,res)=>{
+router.get("/api/papers",auth,async (req,res)=>{
     try {
         const papers=await Paper.find()
         res.json(papers)
@@ -36,11 +36,18 @@ router.get("/api/start-paper/:id",auth,async (req,res)=>{
         const paper=await Paper.findById(id)
         const qids=paper.qs
         let ques=[];
+        let uid=req.user;
         for (let i = 0; i < qids.length; i++) {
             const q = await Question.findById(qids[i]) 
             ques.push(q.toJSON())
             
         }
+
+        let user=await User.findById(uid)
+        user.attempts.push({
+            paperId:id,
+            startTime:new Date().getTime(),
+        })
         res.status(200).json(ques)
         
     } catch (error) {
@@ -102,17 +109,15 @@ router.get("/api/get-marks/:pid",auth,async (req,res)=>{
 
         }
     }
+        
         res.status(200).json(r)
+
+
     } catch (error) {
         res.status(500)._construct.json({error:error.message})
     }
     
-
-
 })
-
-
-
 
 
 module.exports=router
