@@ -42,12 +42,13 @@ router.get("/api/start-paper/:id",auth,async (req,res)=>{
             ques.push(q.toJSON())
             
         }
-
+         
         let user=await User.findById(uid)
         user.attempts.push({
             paperId:id,
             startTime:new Date().getTime(),
         })
+        
         res.status(200).json(ques)
         
     } catch (error) {
@@ -63,6 +64,7 @@ router.get("/api/get-marks/:pid",auth,async (req,res)=>{
     const u=await User.findById(uid)
     const arr=u.attempts
     let r={}
+    
     for (let i = 0; i < arr.length; i++) {
         const e = arr[i];
         if(e.details.paperId===pid){

@@ -18,7 +18,7 @@ const paperschema=mongoose.Schema({
         type:Number
     },
     marks:{
-        required:true,
+        default:0,
         type:Number
     }
     ,
@@ -28,6 +28,13 @@ const paperschema=mongoose.Schema({
     },
     createdAt:{
        type:Number
+    },
+    duration:{
+        type:Number,
+        default:180
+    },
+    by:{
+        type:String,
     }
 
     

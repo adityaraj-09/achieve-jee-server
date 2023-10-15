@@ -93,10 +93,10 @@ adminrouter.post("/api/edit-question/:id",auth,async (req,res)=>{
 
 adminrouter.post("/api/add-Paper",async (req,res)=>{
     try {
-        const {category,title,exam,total_q,marks,qs}=req.body
+        const {category,title,exam,total_q,duration,by}=req.body
 
         let p=new Paper({
-            category,title,exam,total_q,marks,qs,createdAt:new Date().getTime()
+            category,title,exam,total_q,createdAt:new Date().getTime(),duration,by
         })
         p=await p.save()
         res.status(200).json(p)
