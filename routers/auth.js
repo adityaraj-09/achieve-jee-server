@@ -15,8 +15,8 @@ const otpStore = {};
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: 'aditya7903928568@gmail.com',
-    pass: 'cved abay heiz smhw',
+    user: process.env.EMAIL,
+    pass: process.env.PS,
   },
 });
 
@@ -30,7 +30,7 @@ const emailTemplate = ejs.compile(fs.readFileSync(path.resolve(__dirname, 'email
 
 const sendOTPEmail = (toEmail, otp) => {
   const mailOptions = {
-    from: 'aditya7903928568@gmail.com',
+    from: process.env.EMAIL,
     to: toEmail,
     subject: 'Your OTP Code',
     html: emailTemplate({ otp: otp }),
