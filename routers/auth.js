@@ -9,8 +9,14 @@ const auth = require("../middlewares/authMiddleware")
 const authrouter = express.Router();
 const jwt = require("jsonwebtoken")
 const nodemailer = require('nodemailer');
+const { v4: uuidv4 } = require('uuid');
+
+
+
 
 const otpStore = {};
+
+const fpuuid={}
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
@@ -27,15 +33,14 @@ const generateOTP = () => {
   return otp;
 };
 const emailTemplate = ejs.compile(fs.readFileSync(path.resolve(__dirname, 'email-template.ejs'), 'utf8'));
-
-const sendOTPEmail = (toEmail, otp) => {
+const forgTemplate=ejs.compile(fs.readFileSync(path.resolve(__dirname, 'forgotpass-template.ejs'), 'utf8'))
+const sendEmail = (toEmail, data,template,subject) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: toEmail,
-    subject: 'Your OTP Code',
-    html: emailTemplate({ otp: otp }),
+    subject: subject,
+    html: template(data),
   };
-
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error('Error sending OTP email:', error);
@@ -79,6 +84,7 @@ authrouter.get("/api/verify-Otp",async (req,res)=>{
   res.status(500).json({msg:"Invalid Otp or otp expired"})
   
 })
+
 authrouter.get("/",async (req,res)=>{
   
   res.status(200).json({msg:"Hii,welcome to achieve jee server"})
@@ -119,11 +125,13 @@ authrouter.post("/api/signup", async (req, res) => {
   }
 })
 
+
+
 authrouter.post("/api/signin", async (req, res) => {
   try {
 
     const { email, password } = req.body;
-    const user = await User.findOne({
+    let user = await User.findOne({
       email: email
     });
 
@@ -138,7 +146,8 @@ authrouter.post("/api/signin", async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, "adityaMalekith09", { expiresIn: '24h' });
-   
+    user.lastlogin=Date.now();
+    user=await user.save()
     return res.status(200).json({...user._doc,token})
 
   } catch (error) {
@@ -148,6 +157,71 @@ authrouter.post("/api/signin", async (req, res) => {
 })
 
 
+authrouter.post("/api/change-password",auth,async (req,res)=>{
+  try {
+    const {oldp,newp,id}=req.body
+    let user=await User.findById(id)
+    const isMatch = await bcrypt.compare(oldp, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: "password not correct" });
+    }
+    const hash = await bcrypt.hash(newp, 8);
+    user.password=hash
+    user.lastpasschanged=Date.now()
+    user=await user.save();
+    res.status(200).json(user)
+  } catch (error) {
+    return res
+    .status(401)
+    .json({ error: error });
+  }
+})
+
+
+authrouter.post("/api/send-otp",async(req,res)=>{
+  try {
+    const {email}=req.body
+    const user=await User.findOne({email:email})
+    if(user && user.verified){
+
+      const otpCode = generateOTP();
+      const data={
+        otp:otpCode
+      }
+      sendEmail(email, data,emailTemplate,"your otp");
+      res.status(200).json({msg:'otp sent'})
+    }else{
+      res.status(400).json({msg:'user not found'})
+    }
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+  
+})
+
+
+authrouter.post("/api/reset-password",async (req,res)=>{
+  try {
+    const {id,password}=req.body
+
+    if(fpuuid[id]){
+      let user=await User.findById(id)
+      const hash = await bcrypt.hash(password, 8);
+      user.password=hash
+      user.lastpasschanged=Date.now()
+      user=await user.save(); 
+      delete fpuuid[id]
+      return res.status(200).json(user)
+    }
+ 
+    res.status(400).json({msg:"Invalid session or session expired"})
+  
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+ 
 
 authrouter.get("/api/getData", auth, async (req, res) => {
   const { email } = req.body;
@@ -191,23 +265,65 @@ authrouter.post("/api/istokenvalid", async (req, res) => {
 
 
 
-authrouter.post('/api/refresh', (req, res) => {
-  if (req.cookies?.jwt) {
-      const refreshToken = req.cookies.jwt;
-      jwt.verify(refreshToken,"rishabhMalekith09", 
-      (err, decoded) => {
-          if (err) {
-              return res.status(406).json({ message: 'Unauthorized' });
-          }
-          else {
-             
-              const accessToken = jwt.sign({ id: "adityaMalekith09" }, "adityaMalekith09", { expiresIn: '10m' });
-              return res.json({ accessToken });
-          }
-      })
-  } else {
-      return res.status(406).json({ message: 'Unauthorized' });
+authrouter.post('/api/refresh',auth, (req, res) => {
+  try {
+    const {id,time}=req.body
+    const token = jwt.sign({ id: id }, "adityaMalekith09", { expiresIn: time });
+    res.status(200).json({token:token})
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 })
 module.exports = authrouter
 
+authrouter.post('/api/sendlink',async (req,res)=>{
+  try {
+    const {email} =req.body
+    const user=await User.findOne({email:email})
+    if(!user){
+      return res.status(400).json("not found")
+    }
+
+    const uuid = uuidv4();
+
+    const link=`http://achieve-jee-server.onrender.com/api/forgot-password/${uuid}?id=${user.id}`
+    const timestamp=Date.now()
+    const uid=`${uuid}${user.id}`
+    fpuuid[user.id]={uid,timestamp}
+    const data={
+      resetLink:link
+    }
+
+    sendEmail(email, data,forgTemplate,"password reset link");
+    res.status(200).json({msg:'email link  sent to email'})
+    
+  } catch (error) {
+     res.status(500).json({ error: error.message });
+  }
+})
+
+authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
+  try {
+    const {uuid} =req.params
+    const {id}=req.query
+    const u=`${uuid}${id}`
+   
+    if(fpuuid[id]){
+      const currentTime = Date.now();
+      const timeDifference = currentTime - fpuuid[id].timestamp;
+      if(fpuuid[id].uid===u && timeDifference<600000){
+        res.sendFile('public/resetpass.html', { root: __dirname });
+      }else{
+        
+        res.status(404).send("link expired")
+      }
+    }else{
+      res.status(404).send("session expired or invalid session")
+    }
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+ 
+
+})

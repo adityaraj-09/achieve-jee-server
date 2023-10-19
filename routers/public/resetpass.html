@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+        }
+        input[type="password"],input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #passwordMismatchError{
+            color: red;
+            display: none;
+        }
+        #success,#failure{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 id="success">Password has been chnaged succesfully </h3>
+        <h3 id="failure">Invalid session or session expired </h3>
+        <form  method="POST" id="resetForm">
+            <h1>Password Reset</h1>
+            <p>Please enter your new password below:</p>
+            <label for="password">New Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="text" id="confirmPassword" name="confirmPassword" required >
+            <br>
+            <button type="submit">Reset Password</button>
+            <p id="passwordMismatchError" >password doesn't match</p>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const resetForm = document.getElementById('resetForm');
+            resetForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const newPassword = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const passwordMismatchError = document.getElementById('passwordMismatchError');
+
+        const urlParams = new URLSearchParams(window.location.search);
+         const queryParameter = urlParams.get('id');
+               
+                if(newPassword===confirmPassword){
+                    passwordMismatchError.style.display = 'none';
+                    fetch('/api/reset-password', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                password: newPassword,
+                                id: queryParameter,
+                            }),
+                        })
+                            .then((response) => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+                                    return response.json()
+                            })
+                            .then(data => {
+                                const s=document.getElementById("success")
+                                resetForm.style.display="none"
+                                s.style.display='block'
+                                console.log(data);
+                            })
+                            .catch(error => {
+                                const f=document.getElementById("failure")
+                                resetForm.style.display="none"
+                                f.style.display='block'
+                                
+                                console.error('API call error:', error);
+                            });
+                }else{
+                    passwordMismatchError.style.display = 'block';
+                    
+                }
+
+                })
+            })
+    </script>
+</body>
+</html>

@@ -71,7 +71,15 @@ const userSchema=mongoose.Schema({
             },
         marks: markSchema 
     }
-    ]
+    ],
+    lastlogin:{
+        type:Number,
+        default:0
+    },
+    lastpasschanged:{
+        type:Number,
+        default:0
+    }
 });
 
 
