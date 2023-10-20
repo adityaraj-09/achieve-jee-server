@@ -50,7 +50,7 @@ const sendEmail = (toEmail, data,template,subject) => {
   });
 };
 
-function verifyOTP(userIdentifier, enteredOTP) {
+function verifyOTP(userIdentifier, enteredOTP) { 
   const storedOTP = otpStore[userIdentifier];
 
   if (!storedOTP) {
@@ -274,15 +274,18 @@ authrouter.post('/api/refresh',auth, (req, res) => {
     res.status(500).json({ error: error.message });
   }
 })
-module.exports = authrouter
 
 authrouter.post('/api/sendlink',async (req,res)=>{
   try {
     const {email} =req.body
     const user=await User.findOne({email:email})
     if(!user){
-      return res.status(400).json("not found")
+      return res.status(400).send("not found")
     }
+
+    if(Date.now()-user.lastpasschanged<600000){
+      return res.status(500).send("try again after some time")
+    }    
 
     const uuid = uuidv4();
 
@@ -327,3 +330,5 @@ authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
  
 
 })
+
+module.exports = authrouter
