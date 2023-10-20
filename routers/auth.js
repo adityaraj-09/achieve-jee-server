@@ -280,11 +280,11 @@ authrouter.post('/api/sendlink',async (req,res)=>{
     const {email} =req.body
     const user=await User.findOne({email:email})
     if(!user){
-      return res.status(400).send("not found")
+      return res.status(400).json({msg:'not found'})
     }
 
     if(Date.now()-user.lastpasschanged<600000){
-      return res.status(500).send("try again after some time")
+      return res.status(500).json({msg:'try again after some time'})
     }    
 
     const uuid = uuidv4();
