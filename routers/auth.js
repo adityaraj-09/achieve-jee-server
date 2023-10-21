@@ -15,7 +15,6 @@ const { v4: uuidv4 } = require('uuid');
 
 
 const otpStore = {};
-
 const fpuuid={}
 
 const transporter = nodemailer.createTransport({
@@ -34,6 +33,7 @@ const generateOTP = () => {
 };
 const emailTemplate = ejs.compile(fs.readFileSync(path.resolve(__dirname, 'email-template.ejs'), 'utf8'));
 const forgTemplate=ejs.compile(fs.readFileSync(path.resolve(__dirname, 'forgotpass-template.ejs'), 'utf8'))
+
 const sendEmail = (toEmail, data,template,subject) => {
   const mailOptions = {
     from: process.env.EMAIL,
@@ -106,7 +106,10 @@ authrouter.post("/api/signup", async (req, res) => {
 
     const hash = await bcrypt.hash(password, 8);
     const otpCode = generateOTP();
-    sendOTPEmail(email, otpCode);
+    const data={
+      otp:otpCode
+    }
+    sendEmail(email, data,emailTemplate,"your otp");
 
     let user = new User({
       name: name,
@@ -207,12 +210,15 @@ authrouter.post("/api/reset-password",async (req,res)=>{
 
     if(fpuuid[id]){
       let user=await User.findById(id)
-      const hash = await bcrypt.hash(password, 8);
-      user.password=hash
-      user.lastpasschanged=Date.now()
-      user=await user.save(); 
-      delete fpuuid[id]
-      return res.status(200).json(user)
+      if(Date.now()-user.lastpasschanged<600000){
+
+        const hash = await bcrypt.hash(password, 8);
+        user.password=hash
+        user.lastpasschanged=Date.now()
+        user=await user.save(); 
+        delete fpuuid[id]
+        return res.status(200).json(user)
+      }
     }
  
     res.status(400).json({msg:"Invalid session or session expired"})
@@ -234,7 +240,7 @@ authrouter.get("/api/getData", auth, async (req, res) => {
       .status(400)
       .json({ msg: "User with this email does not exist!" });
   }
-
+ 
   res.status(200).json(user);
 })
 
@@ -284,7 +290,7 @@ authrouter.post('/api/sendlink',async (req,res)=>{
     }
 
     if(Date.now()-user.lastpasschanged<600000){
-      return res.status(500).json({msg:'try again after some time'})
+      return res.status(500).json({msg:'try again after some'})
     }    
 
     const uuid = uuidv4();
@@ -317,8 +323,12 @@ authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
       if(fpuuid[id].uid===u && timeDifference<600000){
         res.sendFile('public/resetpass.html', { root: __dirname });
       }else{
-        
-        res.status(404).send("link expired")
+        if(fpuuid[id]!=u){
+
+          res.status(404).send("invalid link")
+        }else{
+          res.status(404).send("session expired")
+        }
       }
     }else{
       res.status(404).send("session expired or invalid session")
@@ -329,6 +339,10 @@ authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
   }
  
 
+})
+
+authrouter.post("/api/upload-image",auth,async (req,res)=>{
+  
 })
 
 module.exports = authrouter
