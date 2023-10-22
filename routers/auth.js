@@ -10,6 +10,7 @@ const authrouter = express.Router();
 const jwt = require("jsonwebtoken")
 const nodemailer = require('nodemailer');
 const { v4: uuidv4 } = require('uuid');
+const checkGuard = require("../middlewares/checkmiddleware");
 
 
 
@@ -70,7 +71,7 @@ function verifyOTP(userIdentifier, enteredOTP) {
 
 
 
-authrouter.get("/api/verify-Otp",async (req,res)=>{
+authrouter.get("/api/verify-Otp",checkGuard,async (req,res)=>{
   const {otp,email,id}=req.body
   const d= verifyOTP(email,otp);
   if(d){
@@ -85,11 +86,11 @@ authrouter.get("/api/verify-Otp",async (req,res)=>{
   
 })
 
-authrouter.get("/",async (req,res)=>{
+authrouter.get("/",checkGuard,async (req,res)=>{
   
   res.status(200).json({msg:"Hii,welcome to achieve jee server"})
 })
-authrouter.post("/api/signup", async (req, res) => {
+authrouter.post("/api/signup",checkGuard, async (req, res) => {
   try {
 
     const { name, email, password, address, phone, image } = req.body;
@@ -130,7 +131,7 @@ authrouter.post("/api/signup", async (req, res) => {
 
 
 
-authrouter.post("/api/signin", async (req, res) => {
+authrouter.post("/api/signin",checkGuard, async (req, res) => {
   try {
 
     const { email, password } = req.body;
@@ -160,7 +161,7 @@ authrouter.post("/api/signin", async (req, res) => {
 })
 
 
-authrouter.post("/api/change-password",auth,async (req,res)=>{
+authrouter.post("/api/change-password",checkGuard,auth,async (req,res)=>{
   try {
     const {oldp,newp,id}=req.body
     let user=await User.findById(id)
@@ -181,7 +182,7 @@ authrouter.post("/api/change-password",auth,async (req,res)=>{
 })
 
 
-authrouter.post("/api/send-otp",async(req,res)=>{
+authrouter.post("/api/send-otp",checkGuard,async(req,res)=>{
   try {
     const {email}=req.body
     const user=await User.findOne({email:email})
@@ -204,7 +205,7 @@ authrouter.post("/api/send-otp",async(req,res)=>{
 })
 
 
-authrouter.post("/api/reset-password",async (req,res)=>{
+authrouter.post("/api/reset-password",checkGuard,async (req,res)=>{
   try {
     const {id,password}=req.body
 
@@ -229,7 +230,7 @@ authrouter.post("/api/reset-password",async (req,res)=>{
 })
  
 
-authrouter.get("/api/getData", auth, async (req, res) => {
+authrouter.get("/api/getData",checkGuard, auth, async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({
     email: email
@@ -244,7 +245,7 @@ authrouter.get("/api/getData", auth, async (req, res) => {
   res.status(200).json(user);
 })
 
-authrouter.post("/api/istokenvalid", async (req, res) => {
+authrouter.post("/api/istokenvalid",checkGuard, async (req, res) => {
   try {
     const jwtToken = req.header("x-auth-token");
     if (jwtToken===null)
@@ -271,7 +272,7 @@ authrouter.post("/api/istokenvalid", async (req, res) => {
 
 
 
-authrouter.post('/api/refresh',auth, (req, res) => {
+authrouter.post('/api/refresh',checkGuard,auth, (req, res) => {
   try {
     const {id,time}=req.body
     const token = jwt.sign({ id: id }, "adityaMalekith09", { expiresIn: time });
@@ -281,7 +282,7 @@ authrouter.post('/api/refresh',auth, (req, res) => {
   }
 })
 
-authrouter.post('/api/sendlink',async (req,res)=>{
+authrouter.post('/api/sendlink',checkGuard,async (req,res)=>{
   try {
     const {email} =req.body
     const user=await User.findOne({email:email})
@@ -308,7 +309,7 @@ authrouter.post('/api/sendlink',async (req,res)=>{
     
   } catch (error) {
      res.status(500).json({ error: error.message });
-  }
+  } 
 })
 
 authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
@@ -341,8 +342,16 @@ authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
 
 })
 
-authrouter.post("/api/upload-image",auth,async (req,res)=>{
-  
+authrouter.post("/api/upload-image",checkGuard,auth,async (req,res)=>{
+    try {
+            const {id,img}=req.body
+            let user=await User.findById(id)
+            user.image=img
+            user=await user.save()
+            res.status(200).send("success")
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
 })
 
 module.exports = authrouter

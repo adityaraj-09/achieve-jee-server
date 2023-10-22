@@ -5,8 +5,9 @@ const Question=require("../models/question");
 const Paper=require("../models/paper");
 const auth=require("../middlewares/authMiddleware")
 const adminrouter=express.Router();
+const checkGuard = require("../middlewares/checkmiddleware");
 
-adminrouter.post("/api/add-question",async (req,res)=>{
+adminrouter.post("/api/add-question",checkGuard,async (req,res)=>{
     try {
         const {type,marks,ans,imageurl,options,body,subject,paperId}=req.body;
 
@@ -43,7 +44,7 @@ adminrouter.post("/api/add-question",async (req,res)=>{
     
 })
 
-adminrouter.post("/api/delete-que",auth,async (req,res)=>{
+adminrouter.post("/api/delete-que",checkGuard,auth,async (req,res)=>{
     try {
         const {id,paperId}=req.params;
         let q=await Question.findById(id)
@@ -67,7 +68,7 @@ adminrouter.post("/api/delete-que",auth,async (req,res)=>{
 })
 
 
-adminrouter.post("/api/edit-question/:id",auth,async (req,res)=>{
+adminrouter.post("/api/edit-question/:id",checkGuard,auth,async (req,res)=>{
     try {
         const {type,marks,ans,imageurl,options,body,subject,paperId}=req.body;
         const id=req.params
@@ -91,7 +92,7 @@ adminrouter.post("/api/edit-question/:id",auth,async (req,res)=>{
     
 })
 
-adminrouter.post("/api/add-Paper",async (req,res)=>{
+adminrouter.post("/api/add-Paper",checkGuard,async (req,res)=>{
     try {
         const {category,title,exam,total_q,duration,by}=req.body
 

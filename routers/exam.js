@@ -5,9 +5,10 @@ const Question=require("../models/question");
 const Paper=require("../models/paper");
 const auth=require("../middlewares/authMiddleware");
 const User = require("../models/user");
+const checkGuard = require("../middlewares/checkmiddleware");
 const router=express.Router();
 
-router.get("/api/get-paper/:id",auth,async (req,res)=>{
+router.get("/api/get-paper/:id",checkGuard,auth,async (req,res)=>{
     try {
         let id=req.params
         const paper=await Paper.findById(id)
@@ -19,7 +20,7 @@ router.get("/api/get-paper/:id",auth,async (req,res)=>{
     }
 })
 
-router.get("/api/papers",auth,async (req,res)=>{
+router.get("/api/papers",checkGuard,auth,async (req,res)=>{
     try {
         const papers=await Paper.find()
         res.json(papers)
@@ -29,7 +30,7 @@ router.get("/api/papers",auth,async (req,res)=>{
 })
 
 
-router.get("/api/start-paper/:id",auth,async (req,res)=>{
+router.get("/api/start-paper/:id",checkGuard,auth,async (req,res)=>{
     try {
 
         let {id}=req.params
@@ -57,7 +58,7 @@ router.get("/api/start-paper/:id",auth,async (req,res)=>{
     }
 })
 
-router.get("/api/get-marks/:pid",auth,async (req,res)=>{
+router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
     try {
     const pid=req.params
     const {uid}=req.body
