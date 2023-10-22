@@ -86,7 +86,7 @@ authrouter.get("/api/verify-Otp",checkGuard,async (req,res)=>{
   
 })
 
-authrouter.get("/",checkGuard,async (req,res)=>{
+authrouter.get("/",async (req,res)=>{
   
   res.status(200).json({msg:"Hii,welcome to achieve jee server"})
 })
@@ -205,7 +205,7 @@ authrouter.post("/api/send-otp",checkGuard,async(req,res)=>{
 })
 
 
-authrouter.post("/api/reset-password",checkGuard,async (req,res)=>{
+authrouter.post("/api/reset-password",async (req,res)=>{
   try {
     const {id,password}=req.body
 
@@ -230,7 +230,7 @@ authrouter.post("/api/reset-password",checkGuard,async (req,res)=>{
 })
  
 
-authrouter.get("/api/getData",checkGuard, auth, async (req, res) => {
+authrouter.get("/api/getData", auth, async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({
     email: email
