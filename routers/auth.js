@@ -211,15 +211,15 @@ authrouter.post("/api/reset-password",async (req,res)=>{
 
     if(fpuuid[id]){
       let user=await User.findById(id)
-      if(Date.now()-user.lastpasschanged<600000){
+      
 
         const hash = await bcrypt.hash(password, 8);
         user.password=hash
         user.lastpasschanged=Date.now()
         user=await user.save(); 
         delete fpuuid[id]
-        return res.status(200).json(user)
-      }
+      return res.status(200).json(user)
+      
     }
  
     res.status(400).json({msg:"Invalid session or session expired"})
@@ -324,7 +324,7 @@ authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
       if(fpuuid[id].uid===u && timeDifference<600000){
         res.sendFile('public/resetpass.html', { root: __dirname });
       }else{
-        if(fpuuid[id]!=u){
+        if(fpuuid[id].uid!=u){
 
           res.status(404).send("invalid link")
         }else{
