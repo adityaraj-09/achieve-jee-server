@@ -26,7 +26,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const generateOTP = () => {
+const generateOTP = (userIdentifier) => {
   const otp=Math.floor(100000 + Math.random() * 900000).toString();
   const timestamp = Date.now();
   otpStore[userIdentifier] = { otp, timestamp };
@@ -75,7 +75,7 @@ authrouter.get("/api/verify-Otp",checkGuard,async (req,res)=>{
   const {otp,email,id}=req.body
   const d= verifyOTP(email,otp);
   if(d){
-
+    delete otpStore[email]
     let user=await User.findById(id)
     user.verified=true;
     user=await user.save();
@@ -90,6 +90,8 @@ authrouter.get("/",async (req,res)=>{
   
   res.status(200).json({msg:"Hii,welcome to achieve jee server"})
 })
+
+
 authrouter.post("/api/signup",checkGuard, async (req, res) => {
   try {
 
@@ -104,9 +106,8 @@ authrouter.post("/api/signup",checkGuard, async (req, res) => {
       });
     }
 
-
     const hash = await bcrypt.hash(password, 8);
-    const otpCode = generateOTP();
+    const otpCode = generateOTP(email);
     const data={
       otp:otpCode
     }
@@ -188,7 +189,7 @@ authrouter.post("/api/send-otp",checkGuard,async(req,res)=>{
     const user=await User.findOne({email:email})
     if(user && user.verified){
 
-      const otpCode = generateOTP();
+      const otpCode = generateOTP(email);
       const data={
         otp:otpCode
       }
@@ -211,14 +212,16 @@ authrouter.post("/api/reset-password",async (req,res)=>{
 
     if(fpuuid[id]){
       let user=await User.findById(id)
-      
+     
+      if(Date.now()-user.lastpasschanged>600000){
 
         const hash = await bcrypt.hash(password, 8);
         user.password=hash
         user.lastpasschanged=Date.now()
         user=await user.save(); 
         delete fpuuid[id]
-      return res.status(200).json(user)
+        return res.status(200).json(user)
+      }
       
     }
  

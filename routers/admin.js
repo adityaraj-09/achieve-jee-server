@@ -75,14 +75,14 @@ adminrouter.post("/api/edit-question/:id",checkGuard,auth,async (req,res)=>{
 
     const existingQ=await Question.findById(id)
        
-    existingQ.type=type
-    existingQ.marks=marks
-    existingQ.ans=ans
-    existingQ.imageurl=imageurl
-    existingQ.options=options
-    existingQ.body=body
-    existingQ.subject=subject
-    existingQ.paperId=paperId
+        existingQ.type=type
+        existingQ.marks=marks
+        existingQ.ans=ans
+        existingQ.imageurl=imageurl
+        existingQ.options=options
+        existingQ.body=body
+        existingQ.subject=subject
+        existingQ.paperId=paperId
 
        q=await u.save();
        res.status(200).json({msg:"success"});

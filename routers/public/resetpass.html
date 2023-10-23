@@ -49,11 +49,27 @@
         #success,#failure{
             display: none;
         }
+        .spinner-cir {
+            display: none;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h3 id="success">Password has been chnaged succesfully </h3>
+        <h3 id="success">Password has been changed succesfully </h3>
         <h3 id="failure">Invalid session or session expired </h3>
         <form  method="POST" id="resetForm">
             <h1>Password Reset</h1>
@@ -64,7 +80,7 @@
             <label for="confirmPassword">Confirm Password:</label>
             <input type="text" id="confirmPassword" name="confirmPassword" required >
             <br>
-            <button type="submit">Reset Password</button>
+            <button type="submit"> <strong id="reset">Reset Password</strong>  <div class="spinner-cir" id="spin"></div></button>
             <p id="passwordMismatchError" >password doesn't match</p>
         </form>
     </div>
@@ -78,7 +94,10 @@
                 const newPassword = document.getElementById('password').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
                 const passwordMismatchError = document.getElementById('passwordMismatchError');
-
+                const spinner=document.getElementById('spin')
+                const reset=document.getElementById('reset')
+                spinner.style.display='block'
+                reset.style.display="none"
         const urlParams = new URLSearchParams(window.location.search);
          const queryParameter = urlParams.get('id');
                
@@ -108,6 +127,8 @@
                                
                             })
                             .catch(error => {
+                                spinner.style.display='none'
+                                reset.style.display="block"
                                 const f=document.getElementById("failure")
                                 resetForm.style.display="none"
                                 f.style.display='block'
@@ -115,6 +136,8 @@
                                
                             });
                 }else{
+                    spinner.style.display='none'
+                reset.style.display="block"
                     passwordMismatchError.style.display = 'block';
                     
                 }
