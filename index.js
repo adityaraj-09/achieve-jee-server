@@ -13,7 +13,19 @@ const { Socket } = require("dgram");
 
 const app=express()
 const DB="mongodb+srv://aditya:adi123@cluster0.pxaqtot.mongodb.net/?retryWrites=true&w=majority"
-app.use(cors())
+var allowedOrigins = ['https://achieve-jee.onrender.com','http://localhost:8000'];
+app.use(cors({
+  origin: function(origin, callback){
+    
+    if(!origin) return callback(null, false);
+    if(allowedOrigins.indexOf(origin) === -1){
+      var msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
 app.use(express.json())
 app.use(express.static('public'));
 

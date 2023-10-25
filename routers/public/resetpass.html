@@ -10,13 +10,18 @@
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
         }
         .container {
             max-width: 400px;
             margin: 0 auto;
             padding: 20px;
             background-color: #fff;
-            border-radius: 5px;
+            border-radius: 15px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         h1 {
@@ -28,14 +33,14 @@
             color: #666;
         }
         input[type="password"],input[type="text"] {
-            width: 100%;
+            width: 80%;
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
         button {
-            background-color: #007BFF;
+            background-color: #2b3674;
             color: #fff;
             border: none;
             padding: 10px 20px;
@@ -78,7 +83,7 @@
             <input type="password" id="password" name="password" required>
             <br>
             <label for="confirmPassword">Confirm Password:</label>
-            <input type="text" id="confirmPassword" name="confirmPassword" required >
+            <input type="text" id="confirmPassword" name="confirmPassword" required autocomplete="off">
             <br>
             <button type="submit"> <strong id="reset">Reset Password</strong>  <div class="spinner-cir" id="spin"></div></button>
             <p id="passwordMismatchError" >password doesn't match</p>
