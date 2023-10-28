@@ -4,34 +4,28 @@ const cors =require("cors");
 const dotenv = require('dotenv').config()
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-
+// const {graphqlHTTP} = require('express-graphql');
 const PORT =8000
 const adminrouter=require("./routers/admin")
 const userrouter=require("./routers/auth")
 const examrouter=require("./routers/exam");
 const { Socket } = require("dgram");
-
+// const schema=require("./routers/qraphql-schema")
 const app=express()
 const DB="mongodb+srv://aditya:adi123@cluster0.pxaqtot.mongodb.net/?retryWrites=true&w=majority"
 var allowedOrigins = ['https://achieve-jee.onrender.com','http://localhost:8000'];
-app.use(cors({
-  origin: function(origin, callback){
-    
-    if(!origin) return callback(null, false);
-    if(allowedOrigins.indexOf(origin) === -1){
-      var msg = 'The CORS policy for this site does not ' +
-                'allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  }
-}));
+app.use(cors());
 app.use(express.json())
 app.use(express.static('public'));
 
 app.use(adminrouter)
 app.use(userrouter)
 app.use(examrouter)
+// app.use('/graphql', graphqlHTTP({
+//   schema,
+//   graphiql:true
+
+// }));
 const httpserver=new createServer(app)
 const io=new Server(httpserver,{ 
   cors: {

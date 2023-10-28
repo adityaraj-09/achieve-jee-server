@@ -213,7 +213,7 @@ authrouter.post("/api/reset-password",async (req,res)=>{
     if(fpuuid[id]){
       let user=await User.findById(id)
      
-      if(Date.now()-user.lastpasschanged>600000){
+      
 
         const hash = await bcrypt.hash(password, 8);
         user.password=hash
@@ -221,7 +221,7 @@ authrouter.post("/api/reset-password",async (req,res)=>{
         user=await user.save(); 
         delete fpuuid[id]
         return res.status(200).json(user)
-      }
+      
       
     }
  
