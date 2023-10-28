@@ -209,8 +209,6 @@ authrouter.post("/api/send-otp",checkGuard,async(req,res)=>{
 authrouter.post("/api/reset-password",async (req,res)=>{
   try {
     const {id,password}=req.body
-    
-    
 
     if(fpuuid[id]){
       let user=await User.findById(id)
@@ -339,7 +337,7 @@ authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
         }
       }
     }else{
-      res.sendFile('public/resetpass.html', { root: __dirname });
+      res.status(404).send("session expired or invalid session")
     }
     
   } catch (error) {
