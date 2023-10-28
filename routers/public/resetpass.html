@@ -168,11 +168,7 @@
             return strength;
 
         }
-        passwordInput.addEventListener('input', function () {
-            const password = passwordInput.value;
-            const strength = checkPasswordStrength(password);
-
-            // Provide feedback based on the strength
+        function checker(strength){
             switch (strength) {
                 case 0:
                     passwordStrength.textContent = 'Password strength: Weak';
@@ -197,14 +193,24 @@
                 default:
                     passwordStrength.textContent = '';
             }
+        }
+        passwordInput.addEventListener('input', function () {
+            const password = passwordInput.value;
+            const strength = checkPasswordStrength(password);
+            checker(strength)
+          
+            
         });
             
 
         generateButton.addEventListener('click', function () {
           
-            const newPassword = generatePassword(12); // Change the length as needed
+            const newPassword = generatePassword(12); 
             passwordInput.value = newPassword;
             cnfrmInput.value=newPassword;
+            const password = passwordInput.value;
+            const strength = checkPasswordStrength(password);
+            checker(strength)
         });
 
             resetForm.addEventListener('submit', function (e) {
