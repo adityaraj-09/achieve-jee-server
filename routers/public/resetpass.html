@@ -75,6 +75,18 @@
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
+        #generate-button {
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 5px;
+            border: none;
+            padding: 8px 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #passwordStrength {
+            color: #333;
+        }
 
         @keyframes spin {
             0% {
@@ -101,28 +113,116 @@
             <label for="confirmPassword">Confirm Password:</label>
             <input type="text" id="confirmPassword" name="confirmPassword" required autocomplete="off">
             <br>
+            <button id="generate-button" type="button">Generate Password</button>
             <button type="submit"> <strong id="reset">Reset Password</strong>
                 <div class="spinner-cir" id="spin"></div>
             </button>
             <p id="passwordMismatchError">password doesn't match</p>
+            <p id="passwordStrength"></p>
+            
         </form>
+        
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const resetForm = document.getElementById('resetForm');
+            const passwordInput = document.getElementById('password');
+                const cnfrmInput=document.getElementById("confirmPassword")
+         const generateButton = document.getElementById('generate-button');
+         function generatePassword(length) {
+            const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset.charAt(randomIndex);
+            }
+            return password;
+        }
+
+        function checkPasswordStrength(password) {
+            // Example criteria (customize as needed)
+            const lengthRegex = /(?=.{8,})/;
+            const uppercaseRegex = /(?=.*[A-Z])/;
+            const lowercaseRegex = /(?=.*[a-z])/;
+            const digitRegex = /(?=.*\d)/;
+            const specialCharRegex = /(?=.*[!@#$%^&*])/;
+
+            let strength = 0;
+            
+            if (lengthRegex.test(password)) {
+                strength++;
+            }
+            if (uppercaseRegex.test(password)) {
+                strength++;
+            }
+            if (lowercaseRegex.test(password)) {
+                strength++;
+            }
+            if (digitRegex.test(password)) {
+                strength++;
+            }
+            if (specialCharRegex.test(password)) {
+                strength++;
+            }
+            return strength;
+
+        }
+        passwordInput.addEventListener('input', function () {
+            const password = passwordInput.value;
+            const strength = checkPasswordStrength(password);
+
+            // Provide feedback based on the strength
+            switch (strength) {
+                case 0:
+                    passwordStrength.textContent = 'Password strength: Weak';
+                    passwordStrength.style.color = 'red';
+                    break;
+                case 1:
+                    passwordStrength.textContent = 'Password strength: Fair';
+                    passwordStrength.style.color = 'orange';
+                    break;
+                case 2:
+                    passwordStrength.textContent = 'Password strength: Good';
+                    passwordStrength.style.color = 'blue';
+                    break;
+                case 3:
+                    passwordStrength.textContent = 'Password strength: Strong';
+                    passwordStrength.style.color = 'green';
+                    break;
+                    case 4:
+                    passwordStrength.textContent = 'Password strength: Very Strong';
+                    passwordStrength.style.color = 'green';
+                    break;
+                default:
+                    passwordStrength.textContent = '';
+            }
+        });
+            
+
+        generateButton.addEventListener('click', function () {
+          
+            const newPassword = generatePassword(12); // Change the length as needed
+            passwordInput.value = newPassword;
+            cnfrmInput.value=newPassword;
+        });
+
             resetForm.addEventListener('submit', function (e) {
                 e.preventDefault();
 
                 const newPassword = document.getElementById('password').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
+                console.log(`${newPassword} ${confirmPassword}`)
                 const passwordMismatchError = document.getElementById('passwordMismatchError');
                 const spinner = document.getElementById('spin')
                 const reset = document.getElementById('reset')
                 spinner.style.display = 'block'
                 reset.style.display = "none"
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const queryParameter = urlParams.get('id');
+
+               
 
                 if (newPassword === confirmPassword) {
                     passwordMismatchError.style.display = 'none';
