@@ -126,7 +126,7 @@ authrouter.post("/api/signup",checkGuard, async (req, res) => {
 
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ msg: error.message });
   }
 })
 
@@ -156,7 +156,7 @@ authrouter.post("/api/signin",checkGuard, async (req, res) => {
     return res.status(200).json({...user._doc,token})
 
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ msg: error.message });
   }
 
 })
@@ -178,7 +178,7 @@ authrouter.post("/api/change-password",checkGuard,auth,async (req,res)=>{
   } catch (error) {
     return res
     .status(401)
-    .json({ error: error });
+    .json({ msg: error.message });
   }
 })
 
@@ -200,7 +200,7 @@ authrouter.post("/api/send-otp",checkGuard,async(req,res)=>{
     }
     
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ msg: error.message });
   }
   
 })
@@ -292,11 +292,13 @@ authrouter.post('/api/sendlink',checkGuard,async (req,res)=>{
     const {email} =req.body
     const user=await User.findOne({email:email})
     if(!user){
-      return res.status(400).json({msg:'not found'})
+      return res.status(400).json({msg:'User with this email does not exist!'})
     }
 
     if(Date.now()-user.lastpasschanged<600000){
-      return res.status(500).json({msg:'try again after some'})
+      const elapsedTime = Date.now() - user.lastpasschanged;
+  const remainingTimeInMinutes = Math.ceil((600000 - elapsedTime) / 60000);
+      return res.status(500).json({msg:`try again after some ${remainingTimeInMinutes} min`})
     }    
 
     const uuid = uuidv4();
@@ -313,7 +315,7 @@ authrouter.post('/api/sendlink',checkGuard,async (req,res)=>{
     res.status(200).json({msg:'email link  sent to email'})
     
   } catch (error) {
-     res.status(500).json({ error: error.message });
+     res.status(500).json({ msg: error.message });
   } 
 })
 
@@ -341,7 +343,7 @@ authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
     }
     
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ msg: error.message });
   }
  
 
@@ -355,7 +357,7 @@ authrouter.post("/api/upload-image",checkGuard,auth,async (req,res)=>{
             user=await user.save()
             res.status(200).send("success")
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ msg: error.message });
     }
 })
 
