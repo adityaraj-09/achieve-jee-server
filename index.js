@@ -14,10 +14,15 @@ const { Socket } = require("dgram");
 const app=express()
 const DB="mongodb+srv://aditya:adi123@cluster0.pxaqtot.mongodb.net/?retryWrites=true&w=majority"
 var allowedOrigins = ['https://achieve-jee.onrender.com','http://localhost:8000'];
+
 app.use(cors());
 app.use(express.json())
-app.use(express.static('public'));
 
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
+
+// Set the directory where your EJS templates are located
+app.set('views', __dirname + '/views'); 
 app.use(adminrouter)
 app.use(userrouter)
 app.use(examrouter)

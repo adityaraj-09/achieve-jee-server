@@ -332,14 +332,15 @@ authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
         res.sendFile('public/resetpass.html', { root: __dirname });
       }else{
         if(fpuuid[id].uid!=u){
-
-          res.status(404).send("invalid link")
+          res.render('session-expired', {msg:"INVALID LINK"});
+          
         }else{
-          res.status(404).send("session expired")
+          res.render('session-expired', {msg:"SESSION EXPIRED"});
         }
       }
     }else{
-      res.status(404).send("session expired or invalid session")
+
+      res.render('session-expired', {msg:"SESSION EXPIRED"});
     }
     
   } catch (error) {

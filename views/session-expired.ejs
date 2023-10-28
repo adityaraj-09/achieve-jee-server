@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Session Expired</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .container {
+            margin: 100px auto;
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #e74c3c; /* Red color for error message */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><%= msg %></h1>
+        <p>The reset password link has expired. Please request a new link to reset your password.</p>
+        <a href="https://achieve-jee.onrender.com/login">Request Password Reset</a>
+    </div>
+</body>
+</html>
