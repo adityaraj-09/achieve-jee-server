@@ -72,7 +72,8 @@ function verifyOTP(userIdentifier, enteredOTP) {
 
 
 authrouter.post("/api/verify-Otp", checkGuard, async (req, res) => {
-  const { otp, email, id } = req.body
+  try {
+    const { otp, email, id } = req.body
   const d = verifyOTP(email, otp);
   if (d) {
     delete otpStore[email]
@@ -83,6 +84,10 @@ authrouter.post("/api/verify-Otp", checkGuard, async (req, res) => {
   }
 
   res.status(500).json({ msg: "Invalid Otp or otp expired" })
+  } catch (error) {
+    res.status(500).json({ msg: error.message })
+  }
+  
 
 })
 
