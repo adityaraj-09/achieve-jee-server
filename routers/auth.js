@@ -71,7 +71,7 @@ function verifyOTP(userIdentifier, enteredOTP) {
 
 
 
-authrouter.get("/api/verify-Otp", checkGuard, async (req, res) => {
+authrouter.post("/api/verify-Otp", checkGuard, async (req, res) => {
   const { otp, email, id } = req.body
   const d = verifyOTP(email, otp);
   if (d) {
@@ -181,7 +181,7 @@ authrouter.post("/api/change-password", checkGuard, auth, async (req, res) => {
 })
 
 
-authrouter.post("/api/send-otp", checkGuard, async (req, res) => {
+authrouter.post("/api/send-otp",auth,checkGuard, async (req, res) => {
   try {
     const { email } = req.body
     const user = await User.findOne({ email: email })
