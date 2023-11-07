@@ -1,8 +1,5 @@
 const mongoose = require("mongoose");
-const attemptSchema = require("./attempt");
-const markSchema = require("./marks");
-const { composeWithMongoose } = require('graphql-compose-mongoose');
-const { schemaComposer } = require('graphql-compose');
+
 
 const attemptSchema = mongoose.Schema({
     paperId: {

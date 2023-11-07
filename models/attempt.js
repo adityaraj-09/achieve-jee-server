@@ -16,4 +16,3 @@ const attemptSchema=mongoose.Schema({
     }
     
 })
-module.exports= attemptSchema
