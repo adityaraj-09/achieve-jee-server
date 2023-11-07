@@ -181,7 +181,7 @@ authrouter.post("/api/change-password", checkGuard, auth, async (req, res) => {
 })
 
 
-authrouter.post("/api/send-otp",auth,checkGuard, async (req, res) => {
+authrouter.post("/api/send-otp",checkGuard,auth, async (req, res) => {
   try {
     const { email } = req.body
     const user = await User.findOne({ email: email })
@@ -195,7 +195,7 @@ authrouter.post("/api/send-otp",auth,checkGuard, async (req, res) => {
         const timeDifference = currentTime - timestamp;
         const remainingTimeInMinutes = Math.ceil((180000 - timeDifference) / 60000);
         if (timeDifference < 180000) {
-          return res.status(200).json({ msg: `try again after ${remainingTimeInMinutes} min` })
+          return res.status(400).json({ msg: `try again after ${remainingTimeInMinutes} min` })
         } else {
           const otpCode = generateOTP(email);
           const data = {
