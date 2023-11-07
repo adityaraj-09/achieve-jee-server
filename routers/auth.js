@@ -55,6 +55,7 @@ function verifyOTP(userIdentifier, enteredOTP) {
   const storedOTP = otpStore[userIdentifier];
 
   if (!storedOTP) {
+    
     return false;
   }
 
@@ -62,9 +63,12 @@ function verifyOTP(userIdentifier, enteredOTP) {
   const currentTime = Date.now();
   const timeDifference = currentTime - timestamp;
 
-  if (otp === parseInt(enteredOTP, 10) && timeDifference <= 600000) { // 10 minutes in milliseconds
+  if (otp === enteredOTP && timeDifference <= 600000) { // 10 minutes in milliseconds
+
     return true;
   } else {
+    console.log(parseInt(enteredOTP, 10))
+    console.log(timeDifference)
     return false;
   }
 }
@@ -74,6 +78,7 @@ function verifyOTP(userIdentifier, enteredOTP) {
 authrouter.post("/api/verify-Otp", checkGuard, async (req, res) => {
   try {
     const { otp, email, id } = req.body
+    console.log(otp)
   const d = verifyOTP(email, otp);
   if (d) {
     delete otpStore[email]
