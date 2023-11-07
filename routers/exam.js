@@ -45,10 +45,11 @@ router.get("/api/start-paper/:id",checkGuard,auth,async (req,res)=>{
         }
          
         let user=await User.findById(uid)
-        user.attempts.push({
-            paperId:id,
-            startTime:new Date().getTime(),
-        })
+        user.attempts[id].paperId=id
+        user.attempts[id].startTime=Date.now()
+       await user.save()
+
+        
         
         res.status(200).json(ques)
         
@@ -60,16 +61,14 @@ router.get("/api/start-paper/:id",checkGuard,auth,async (req,res)=>{
 
 router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
     try {
-    const pid=req.params
+    const {pid}=req.params
     const {uid}=req.body
     const u=await User.findById(uid)
-    const arr=u.attempts
-    let r={}
     
-    for (let i = 0; i < arr.length; i++) {
-        const e = arr[i];
-        if(e.details.paperId===pid){
-            const m=e.marks.markedAns
+    let r={}
+    const paper=await Paper.findById(pid)
+    let data=u.attempts[pid].markedAns
+    
             let t=0
             let p=0
             let c=0
@@ -77,10 +76,11 @@ router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
             let ca=0
             let tnm=0
             r.aq=m.length
-            for (let index = 0; index < m.length; index++) {
-                const mans = m[index];
-                const q=await Question.findById(mans.q_id)
-                if(q.ans===mans.marked){
+            for (let index = 0; index < data.length; index++) {
+                const mans = data[index];
+                const questionId=paper.qs[index]
+                const q=await Question.findById(questionId)
+                if(q.ans===mans){
                     ca++
                     t=t+q.marks[0]
                    
@@ -109,9 +109,7 @@ router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
             r.m=ma
             r.ca=ca
             r.tnm=tnm
-
-        }
-    }
+   
         
         res.status(200).json(r)
 

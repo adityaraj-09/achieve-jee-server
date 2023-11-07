@@ -1,91 +1,95 @@
-const mongoose= require("mongoose");
+const mongoose = require("mongoose");
 const attemptSchema = require("./attempt");
 const markSchema = require("./marks");
 const { composeWithMongoose } = require('graphql-compose-mongoose');
- const { schemaComposer } = require('graphql-compose');
+const { schemaComposer } = require('graphql-compose');
 
+const attemptSchema = mongoose.Schema({
+    paperId: {
+        type: String,
+        required: true
+    },
+    startTime: {
+        type: Number,
+        required: true
+    },
+    finishTime: {
+        type: Number,
+        default: 0
+    },
 
-const userSchema=mongoose.Schema({
-    name:{
-        required:true,
-        type:String,
-        trim:true,
+    markedAns: {
+        type: Map,
+        of: Array,
+        default: {}
+    },
+})
+
+const userSchema = mongoose.Schema({
+    name: {
+        required: true,
+        type: String,
+        trim: true,
 
     },
-    email:{
-        required:true,
-        type:String,
-        trim:true,
-        validate:{
-            validator:(value) =>{
-                const re=/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+    email: {
+        required: true,
+        type: String,
+        trim: true,
+        validate: {
+            validator: (value) => {
+                const re = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
                 return value.match(re)
             },
-            message:'Please enter valid email'
+            message: 'Please enter valid email'
         },
     },
-    password:{
-        required:true,
-        type:String, 
-        validate:{
-            validator:(value) =>{
-                return value.length>6;
+    password: {
+        required: true,
+        type: String,
+        validate: {
+            validator: (value) => {
+                return value.length > 6;
             },
-            message:'password must be more than 6 characters long'
+            message: 'password must be more than 6 characters long'
         },
     },
     address: {
         type: Array,
         default: [],
-      },    
-    phone:{
-        type:String,
-        default:"",
-        trim:true,
-        
     },
-    image:{
+    phone: {
+        type: String,
+        default: "",
+        trim: true,
+
+    },
+    image: {
         type: String,
         default: "",
     },
-    verified:{
-        type:Boolean,
-        default:false
+    verified: {
+        type: Boolean,
+        default: false
     },
-    attempts:[
-        { paperId:{
-            type:String,
-            required:true
-        },
-        startTime:{
-            type:Number,
-            required:true
-        },
-        finishTime:{
-            type:Number,
-            default:0  
-        },
-            
-        markedAns:{
-                type:Array,
-                default:[]
-            },
-        marks: markSchema 
-    }
-    ],
-    lastlogin:{
-        type:Number,
-        default:0
+    attempts: {
+        type: Map,
+        of: attemptSchema,
+        default: {}
     },
-    lastpasschanged:{
-        type:Number,
-        default:0
+    lastlogin: {
+        type: Number,
+        default: 0
+    },
+    lastpasschanged: {
+        type: Number,
+        default: 0
     }
 });
 
 
-const User=mongoose.model( "student",userSchema);
-module.exports=User;
+const User = mongoose.model("student", userSchema);
+module.exports = User;
 
 //  const UserTC = composeWithMongoose(User);
 

@@ -40,7 +40,7 @@ adminrouter.post("/api/add-question",async (req,res)=>{
        res.status(200).json({msg:"success"})
 
     } catch (error) {
-        res.status(500).json({error:error.message});
+        res.status(500).json({msg:error.message});
     }
     
 })
@@ -64,7 +64,7 @@ adminrouter.post("/api/delete-que",checkGuard,auth,async (req,res)=>{
         res.status(200).json({msg:"success"})
         
     } catch (error) {
-        res.status(500).json({error:error.message});
+        res.status(500).json({msg:error.message});
     }
 })
 
@@ -72,7 +72,7 @@ adminrouter.post("/api/delete-que",checkGuard,auth,async (req,res)=>{
 adminrouter.post("/api/edit-question/:id",checkGuard,auth,async (req,res)=>{
     try {
         const {type,marks,ans,imageurl,options,body,subject,paperId}=req.body;
-        const id=req.params
+        const {id}=req.params
 
     const existingQ=await Question.findById(id)
        
@@ -88,7 +88,7 @@ adminrouter.post("/api/edit-question/:id",checkGuard,auth,async (req,res)=>{
        q=await u.save();
        res.status(200).json({msg:"success"});
     } catch (error) {
-        res.status(500).json({error:error.message});
+        res.status(500).json({msg:error.message});
     }
     
 })
@@ -103,7 +103,7 @@ adminrouter.post("/api/add-Paper",checkGuard,async (req,res)=>{
         p=await p.save()
         res.status(200).json(p)
     } catch (error) {
-        res.status(500).json({error:error.message});
+        res.status(500).json({msg:error.message});
     }
 })
 
@@ -132,10 +132,29 @@ adminrouter.post("/password/:pass",async (req,res)=>{
     
     } catch (error) {
         console.log(error.message)
-        res.status(500).json({error:error.message});
+        res.status(500).json({msg:error.message});
     }
 
   
 
+})
+
+adminrouter.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
+    try {
+        const {hashmaps,pid,uid}=req.body
+        const p=await Paper.findById(pid)
+
+      let user=await User.findById(uid)
+      user.attempts[pid]={
+       ...user.attempts[pid],
+       markedAns:hashmaps
+      }
+      await user.save()
+      res.status(200).json({msg:"answer submitted"})
+      
+        
+    } catch (error) {
+        res.status(500).json({msg:error.message});
+    }
 })
 module.exports=adminrouter
