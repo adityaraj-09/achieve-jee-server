@@ -71,7 +71,7 @@ const userSchema = mongoose.Schema({
     },
     attempts: {
         type: Map,
-        of: attemptSchema,
+        of:attemptSchema,
         default: {}
     },
     lastlogin: {

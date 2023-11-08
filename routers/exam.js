@@ -45,9 +45,23 @@ router.get("/api/start-paper/:id",checkGuard,auth,async (req,res)=>{
         }
          
         let user=await User.findById(uid)
-        user.attempts[id].paperId=id
-        user.attempts[id].startTime=Date.now()
-       await user.save()
+        if(user){
+
+            let u = {
+                paperId: id,
+                startTime: Date.now(),
+                finishTime: 0,
+                markedAns: {},
+              };
+              
+          if(!user.attempts){
+            user.attempts = new Map();
+          }
+            user.attempts.set(id,u)
+           user=await user.save()
+        }else{
+            return res.status(404).json({msg:"user not found"})
+        }
 
         
         
