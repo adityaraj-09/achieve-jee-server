@@ -73,7 +73,7 @@ router.get("/api/start-paper/:id",checkGuard,auth,async (req,res)=>{
 
         
         
-        res.status(200).json(user)
+        res.status(200).json(ques)
         
     } catch (error) {
         res.status(500).json({error:error.message})
