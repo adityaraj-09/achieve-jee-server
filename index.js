@@ -32,53 +32,53 @@ app.use(examrouter)
 
 // }));
 const httpserver=new createServer(app)
-const io=new Server(httpserver,{ 
-  cors: {
-    origin: true,
+// const io=new Server(httpserver,{ 
+//   cors: {
+//     origin: true,
    
-  },
-  allowEIO3: true,})
+//   },
+//   allowEIO3: true,})
 
 
   
 
 
 
-io.on("connection",(Socket)=>{
-    Socket.on("start-timer",async ({uid,pid,dur})=>{
-      if(!io.sockets.adapter.rooms.get(uid+pid)){
+// io.on("connection",(Socket)=>{
+//     Socket.on("start-timer",async ({uid,pid,dur})=>{
+//       if(!io.sockets.adapter.rooms.get(uid+pid)){
 
-        Socket.join(uid+pid)
-      }
-        let time=dur;
-        function gameInterval() {
-          if (time >= 0) {
-            const timeFormat = calculateTime(time);
-            console.log(time)
-            io.to(uid + pid).emit("timer", {
-              countDown: timeFormat,
-              msg: "Time Remaining"
-            });
+//         Socket.join(uid+pid)
+//       }
+//         let time=dur;
+//         function gameInterval() {
+//           if (time >= 0) {
+//             const timeFormat = calculateTime(time);
+//             console.log(time)
+//             io.to(uid + pid).emit("timer", {
+//               countDown: timeFormat,
+//               msg: "Time Remaining"
+//             });
     
-            time--;
-          }
-        }
-        gameInterval();
+//             time--;
+//           }
+//         }
+//         gameInterval();
     
-        const timerId = setInterval(gameInterval, 1000);
+//         const timerId = setInterval(gameInterval, 1000);
     
         
-        if (time < 0) {
-          clearInterval(timerId);
-        }
-    })
-})
-const calculateTime=(time) =>{
-    let min=Math.floor(time/60);
-    let sec=time%60;
-    return `${min}:${sec<10?"0"+sec:sec}`;
+//         if (time < 0) {
+//           clearInterval(timerId);
+//         }
+//     })
+// })
+// const calculateTime=(time) =>{
+//     let min=Math.floor(time/60);
+//     let sec=time%60;
+//     return `${min}:${sec<10?"0"+sec:sec}`;
     
-  }
+//   }
   
 
 mongoose.connect(DB).then(async()=>{

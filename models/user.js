@@ -14,7 +14,6 @@ const attemptSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
-
     markedAns: {
         type: Map,
         of: Array,
@@ -71,7 +70,7 @@ const userSchema = mongoose.Schema({
     },
     attempts: {
         type: Map,
-        of:attemptSchema,
+        of:Array,
         default: {}
     },
     lastlogin: {

@@ -52,12 +52,20 @@ router.get("/api/start-paper/:id",checkGuard,auth,async (req,res)=>{
                 startTime: Date.now(),
                 finishTime: 0,
                 markedAns: {},
+                status:0
               };
               
           if(!user.attempts){
-            user.attempts = new Map();
+            user.attempts =new Map();
+            
           }
-            user.attempts.set(id,u)
+          if(!user.attempts.has(id)){
+            let a=[]
+            a.push(u)
+            user.attempts.set(id,a)
+          }else{
+            user.attempts.get(id).push(u)
+          }
            user=await user.save()
         }else{
             return res.status(404).json({msg:"user not found"})
@@ -65,23 +73,30 @@ router.get("/api/start-paper/:id",checkGuard,auth,async (req,res)=>{
 
         
         
-        res.status(200).json(ques)
+        res.status(200).json(user)
         
     } catch (error) {
         res.status(500).json({error:error.message})
 
     }
 })
-
+function arraysAreEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+      return false; // Arrays have different lengths, so they can't be equal
+    }
+  
+    return arr1.every((element, index) => element === arr2[index]);
+  }
+  
 router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
     try {
     const {pid}=req.params
-    const {uid}=req.body
+    const uid=req.user
     const u=await User.findById(uid)
     
     let r={}
     const paper=await Paper.findById(pid)
-    let data=u.attempts[pid].markedAns
+    let data=u.attempts.get(pid).markedAns
     
             let t=0
             let p=0
@@ -89,12 +104,12 @@ router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
             let ma=0
             let ca=0
             let tnm=0
-            r.aq=m.length
-            for (let index = 0; index < data.length; index++) {
-                const mans = data[index];
+           
+            for (let index = 0; index < paper.qs.length; index++) {
+                const mans = data.get(`${index}`);
                 const questionId=paper.qs[index]
                 const q=await Question.findById(questionId)
-                if(q.ans===mans){
+                if(arraysAreEqual(q.ans,mans)){
                     ca++
                     t=t+q.marks[0]
                    
@@ -125,11 +140,11 @@ router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
             r.tnm=tnm
    
         
-        res.status(200).json(r)
+        res.status(200).send(r)
 
 
     } catch (error) {
-        res.status(500)._construct.json({error:error.message})
+        res.status(500).json({error:error.message})
     }
     
 })

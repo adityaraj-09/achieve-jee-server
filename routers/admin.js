@@ -141,16 +141,15 @@ adminrouter.post("/password/:pass",async (req,res)=>{
 
 adminrouter.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
     try {
-        const {hashmaps,pid,uid}=req.body
-        const p=await Paper.findById(pid)
-
+        const {hashmaps,pid}=req.body
+      
+        const uid=req.user
       let user=await User.findById(uid)
-      user.attempts[pid]={
-       ...user.attempts[pid],
-       markedAns:hashmaps
-      }
-      await user.save()
-      res.status(200).json({msg:"answer submitted"})
+      let u=user.attempts.get(pid).length
+      user.attempts.get(pid)[u-1].markedAns= hashmaps;
+      user.attempts.get(pid)[u-1].finishTime=Date.now()
+     user= await user.save()
+      res.status(200).json(user)
       
         
     } catch (error) {
