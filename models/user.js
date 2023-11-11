@@ -19,6 +19,9 @@ const attemptSchema = mongoose.Schema({
         of: Array,
         default: {}
     },
+    status:{
+
+    }
 })
 
 const userSchema = mongoose.Schema({
@@ -26,7 +29,6 @@ const userSchema = mongoose.Schema({
         required: true,
         type: String,
         trim: true,
-
     },
     email: {
         required: true,
@@ -58,7 +60,6 @@ const userSchema = mongoose.Schema({
         type: String,
         default: "",
         trim: true,
-
     },
     image: {
         type: String,
@@ -70,7 +71,7 @@ const userSchema = mongoose.Schema({
     },
     attempts: {
         type: Map,
-        of:Array,
+        of:Array,    // {"pid":[attemtschema]}
         default: {}
     },
     lastlogin: {
@@ -108,3 +109,5 @@ module.exports = User;
 //   });
 //   const schema = schemaComposer.buildSchema();
 // module.exports=  schema;
+
+

@@ -35,9 +35,12 @@ const paperschema=mongoose.Schema({
     },
     by:{
         type:String,
+    },
+    validTill:{
+        default:0,
+        type:Number
     }
 
-    
 })
 
 const Paper=mongoose.model("paper",paperschema)

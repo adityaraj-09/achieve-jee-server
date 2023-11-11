@@ -52,7 +52,8 @@ router.get("/api/start-paper/:id",checkGuard,auth,async (req,res)=>{
                 startTime: Date.now(),
                 finishTime: 0,
                 markedAns: {},
-                status:0
+                status:0,
+                time:{}
               };
               
           if(!user.attempts){

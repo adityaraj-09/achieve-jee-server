@@ -3,8 +3,8 @@ const mongoose= require("mongoose");
 const questionschema=mongoose.Schema({
     type:{
         required: true,
-        type:Number,        // single correct-0
-                            //multiple coorect-1
+        type:Number,        // single correct-0  
+                            //multiple coorect-1  
     },                      //integer type-2     //numerical -3  //matrix-match-4
     body:{
         required:true,
@@ -30,10 +30,68 @@ const questionschema=mongoose.Schema({
         type:String,
         default:""
     },
-    paperId:{
+    topic:{
         type:String,
         default:""
-    }
+    },
+    paperId:{ 
+        type:String,
+        default:""
+    }, 
 })
+
+
+
 const Question=mongoose.model( "question",questionschema);
 module.exports=Question;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

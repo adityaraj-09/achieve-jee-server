@@ -11,7 +11,7 @@ const jwt = require("jsonwebtoken")
 const nodemailer = require('nodemailer');
 const { v4: uuidv4 } = require('uuid');
 const checkGuard = require("../middlewares/checkmiddleware");
-
+const process=require("process")
 
 
 
@@ -98,7 +98,7 @@ authrouter.post("/api/verify-Otp", checkGuard, async (req, res) => {
 
 authrouter.get("/", async (req, res) => {
 
-  res.status(200).json({ msg: "Hii,welcome to achieve jee server" })
+  res.status(200).json({ msg: `Hii,welcome to achieve jee server ${process.pid} ` })
 })
 
 
