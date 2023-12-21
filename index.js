@@ -7,13 +7,11 @@ const cluster=require("cluster")
 const os=require("os")
 const totalcpus=os.cpus().length
 const process=require("process")
-// const {graphqlHTTP} = require('express-graphql');
 const PORT =8000
 const adminrouter=require("./routers/admin")
 const userrouter=require("./routers/auth")
 const examrouter=require("./routers/exam");
 
-// const schema=require("./routers/qraphql-schema")
 
 const DB="mongodb+srv://aditya:adi123@cluster0.pxaqtot.mongodb.net/?retryWrites=true&w=majority"
 var allowedOrigins = ['https://achieve-jee.onrender.com','http://localhost:8000'];

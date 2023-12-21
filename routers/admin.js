@@ -93,6 +93,7 @@ adminrouter.post("/api/edit-question/:id",checkGuard,auth,async (req,res)=>{
     
 })
 
+
 adminrouter.post("/api/add-Paper",checkGuard,async (req,res)=>{
     try {
         const {category,title,exam,total_q,duration,by}=req.body
@@ -139,23 +140,9 @@ adminrouter.post("/password/:pass",async (req,res)=>{
 
 })
 
-adminrouter.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
-    try {
-        const {hashmaps,pid,time}=req.body
-      
-        const uid=req.user
-      let user=await User.findById(uid)
-      let u=user.attempts.get(pid).length
-      user.attempts.get(pid)[u-1].markedAns= hashmaps;
-      user.attempts.get(pid)[u-1].time= time;
-      user.attempts.get(pid)[u-1].finishTime=Date.now()
-      
-     user= await user.save()
-      res.status(200).json(user)
-      
-        
-    } catch (error) {
-        res.status(500).json({msg:error.message});
-    }
-})
+
+
+
+
+
 module.exports=adminrouter

@@ -196,9 +196,7 @@ authrouter.post("/api/send-otp",checkGuard,auth, async (req, res) => {
     const { email } = req.body
     const user = await User.findOne({ email: email })
     if (user) {
-      if(user.verified){
-        return res.status(403).json({msg:"already verified account"})
-      }
+      
       const storedOTP = otpStore[email]
       if(storedOTP){
 

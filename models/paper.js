@@ -20,8 +20,7 @@ const paperschema=mongoose.Schema({
     marks:{
         default:0,
         type:Number
-    }
-    ,
+    },
     qs:{
         type:Array,
         default:[]
@@ -39,9 +38,43 @@ const paperschema=mongoose.Schema({
     validTill:{
         default:0,
         type:Number
-    }
+    },
+    AttemptedBy: {
+        type: [
+            {
+                uid: { type: String, required: true },
+                marks: { type: Number, required: true },
+                phy:{type:Array,required:true},
+                chem:{type:Array,required:true},
+                math:{type:Array,required:true},
+                time:{type:Array,required:true}
+                
+            },
+        ],
+        default: [],
+    },
 
 })
+
+paperschema.methods.addAttempt = async function (uid,data) {
+   const phy=data.p 
+   const chem=data.c 
+   const math=data.m
+   const marks=data.p[0]+data.c[0]+data.m[0] 
+   const time=data.time   
+    const attempt = { uid,marks,phy,chem,math,time};
+
+    // Add the attempt to the array
+    this.AttemptedBy.push(attempt);
+
+    // Sort the attempts array in descending order based on marks
+    this.AttemptedBy.sort((a, b) => b.marks - a.marks);
+
+    // Save the document
+    await this.save();
+
+    return this;
+};
 
 const Paper=mongoose.model("paper",paperschema)
 module.exports=Paper
