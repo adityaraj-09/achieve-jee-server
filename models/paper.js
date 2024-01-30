@@ -43,6 +43,8 @@ const paperschema=mongoose.Schema({
         type: [
             {
                 uid: { type: String, required: true },
+                name:{type:String,required:true},
+                image:{type:String,required:true},
                 marks: { type: Number, required: true },
                 phy:{type:Array,required:true},
                 chem:{type:Array,required:true},
@@ -53,16 +55,20 @@ const paperschema=mongoose.Schema({
         ],
         default: [],
     },
+    partialMarking:{
+        type:Boolean,
+        default:true
+    } 
 
 })
 
-paperschema.methods.addAttempt = async function (uid,data) {
+paperschema.methods.addAttempt = async function (uid,data,image,name) {
    const phy=data.p 
    const chem=data.c 
    const math=data.m
    const marks=data.p[0]+data.c[0]+data.m[0] 
    const time=data.time   
-    const attempt = { uid,marks,phy,chem,math,time};
+    const attempt = { uid,name,image,marks,phy,chem,math,time};
 
     // Add the attempt to the array
     this.AttemptedBy.push(attempt);

@@ -127,6 +127,7 @@ authrouter.post("/api/signup", checkGuard, async (req, res) => {
       name: name,
       email: email,
       password: hash,
+      createdAt:Date.now(),
       lastlogin:Date.now()
     });
     user = await user.save();

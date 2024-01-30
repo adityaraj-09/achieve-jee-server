@@ -12,7 +12,6 @@ const adminrouter=require("./routers/admin")
 const userrouter=require("./routers/auth")
 const examrouter=require("./routers/exam");
 
-
 const DB="mongodb+srv://aditya:adi123@cluster0.pxaqtot.mongodb.net/?retryWrites=true&w=majority"
 var allowedOrigins = ['https://achieve-jee.onrender.com','http://localhost:8000'];
 
@@ -28,6 +27,7 @@ if(cluster.isPrimary){
     
     app.use(express.static('public'));
     app.set('view engine', 'ejs');
+    
     
     // Set the directory where your EJS templates are located
     app.set('views', __dirname + '/views'); 

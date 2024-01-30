@@ -82,9 +82,72 @@ const userSchema = mongoose.Schema({
     lastpasschanged: {
         type: Number,
         default: 0
+    },
+    createdAt:{
+        type:Number,
+        required:true
     }
 });
 
+function arraysAreEqual( arr1, arr2,type,marks,partialMarking) { 
+    var right=true
+    if(type===0 || type===2 || type===3){
+       right= (arr1[0]===arr2[0])
+       return {right,marks:right?marks[0]:marks[1]}
+    }else{
+        if(!partialMarking){
+            if(arr1.length!=arr2.length){
+                right=false
+                return {right,marks:marks[1]}
+            }else{
+                for (let i = 0; i < arr1.length; i++) {
+                    const element = arr1[i];
+                    if(!arr2.includes(element)){
+                        right=false
+                        return {right,marks:marks[1]}
+                        
+                    }else{
+                        continue
+                    }
+                    
+                }
+
+                return {right,marks:marks[0]}
+            }
+        }else{
+            for (let i = 0; i < arr2.length; i++) {
+                const element = arr2[i];
+                if(!arr1.includes(element)){
+                    right=false
+                    return {right,marks:marks[1]}
+                    
+                }else{
+                    continue
+                }
+                
+            }
+            if(arr2.length===arr1.length){
+                return {right,marks:marks[0]}
+            } else{
+                if(arr1.length===4 ){
+                   return  {right,marks:arr2.length}
+                }else if(arr1.length===3){
+                    if(arr2.length===2){
+                        return {right,marks:2}
+                    }else{
+                        return {right,marks:1}
+                    }
+                }else{
+                    return {right,marks:2}
+                }
+            }
+        }
+    }
+   
+   
+  
+    
+  }
 userSchema.methods.getmarks=async function(pid){
     
    
@@ -120,36 +183,36 @@ userSchema.methods.getmarks=async function(pid){
                         m[3]++
                     }
                 
-                
-                if(arraysAreEqual(q.ans,mans)){
+                const res=arraysAreEqual(q.ans,mans,q.type,q.marks,paper.partialMarking)
+                if(res.right){
                    
-                    t=t+q.marks[0]
+                    t=t+res.marks
                    
                     if(q.type===0){
                         p[1]++
-                        p[0]=p[0]+q.marks[0]
+                        p[0]=p[0]+res.marks
                     }else if(q.type===1){
                         c[1]++
                 
-                       c[0] =c[0]+q.marks[0]
+                       c[0] =c[0]+res.marks
                     }else{
                         m[1]++
-                        m[0]=m[0]+q.marks[0]
+                        m[0]=m[0]+res.marks
                     }
                 }else{
                    
-                    t=t+q.marks[1]
+                    t=t+res.marks
                     if(q.type===0){
-                        p[0]=p[0]+q.marks[1]
-                        p[2]=p[2]+q.marks[1]
+                        p[0]=p[0]+res.marks
+                        p[2]=p[2]+res.marks
 
 
                     }else if(q.type===1){
-                       c[0] =c[0]+q.marks[1]
-                       c[2] =c[2]+q.marks[1]
+                       c[0] =c[0]+res.marks
+                       c[2] =c[2]+res.marks
                     }else{
-                        m[0]=m[0]+q.marks[1]
-                        m[2]=m[2]+q.marks[1]
+                        m[0]=m[0]+res.marks
+                        m[2]=m[2]+res.marks
                     }
                 }}
 
