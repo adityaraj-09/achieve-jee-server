@@ -41,7 +41,6 @@ router.get("/api/start-paper/:id/:resume",checkGuard,auth,async (req,res)=>{
         for (let i = 0; i < qids.length; i++) {
             const q = await Question.findById(qids[i]) 
             ques.push(q.toJSON())
-            
         }
          if(resume==="false"){
 
@@ -79,6 +78,7 @@ router.get("/api/start-paper/:id/:resume",checkGuard,auth,async (req,res)=>{
         res.status(200).json(ques)
         
     } catch (error) {
+        console.log(error)
         res.status(500).json({error:error.message})
 
     }
