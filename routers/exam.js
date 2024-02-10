@@ -32,7 +32,7 @@ router.get("/api/papers",checkGuard,auth,async (req,res)=>{
 
 router.get("/api/start-paper/:id/:resume",checkGuard,auth,async (req,res)=>{
     try {
-
+        let c=1
         let {id,resume}=req.params
         const paper=await Paper.findById(id)
         const qids=paper.qs
@@ -57,17 +57,24 @@ router.get("/api/start-paper/:id/:resume",checkGuard,auth,async (req,res)=>{
                    };
                    
                if(!user.attempts){
+                c=0
                  user.attempts =new Map();
                  
                }
+              
                if(!user.attempts.has(id)){
                  let a=[]
                  a.push(u)
+                 console.log(a)
                  user.attempts.set(id,a)
                }else{
-                 user.attempts.get(id).push(u)
+                if(c===1){
+
+                    user.attempts.get(id).push(u)
+                }
                }
                 user=await user.save()
+                console.log(user)
              }else{
                  return res.status(404).json({msg:"user not found"})
              }
@@ -113,28 +120,38 @@ router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
 router.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
     try {
         const {hashmaps,pid,time}=req.body
-      
+        
         const uid=req.user
       let user=await User.findById(uid)
+      let image = user.image;
+let name = user.name;
       let u=user.attempts.get(pid).length
       let paper=await Paper.findById(pid)
-      if(u===1){
-
-          let data=user.getmarks(pid)
-          
-          await paper.addAttempt(uid,data,user.image,user.name);
-      }
-
-      
+     
       user.attempts.get(pid)[u-1].markedAns= hashmaps;
       user.attempts.get(pid)[u-1].time= time;
       user.attempts.get(pid)[u-1].status=1;
       user.attempts.get(pid)[u-1].finishTime=Date.now()
-      
+      user.markModified('attempts');
      user= await user.save()
+     
+      if(u===2){
+
+          let data=await user.getmarks(pid)
+          if(image===""){
+            image=" "
+          }
+        
+          await paper.addAttempt(uid,data,image,name);
+      }
+
+      
+     
+    
       res.status(200).json(user)
        
     } catch (error) {
+        console.log(error)
         res.status(500).json({msg:error.message});
     }
 })

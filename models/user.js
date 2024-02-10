@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Paper=require("../models/paper");
-const Question=require("../models/paper");
+const Question=require("../models/question");
 
 const attemptSchema = mongoose.Schema({
     paperId: {
@@ -155,8 +155,8 @@ userSchema.methods.getmarks=async function(pid){
     let r={}
     
     const paper=await Paper.findById(pid)
-    let timeData=this.attempts.get(pid)[0].time
-    let data=this.attempts.get(pid)[0].markedAns
+    let timeData=this.attempts.get(pid)[1].time
+    let data=this.attempts.get(pid)[1].markedAns
     
             let t=0
             let time=[0,0,0]
@@ -170,10 +170,13 @@ userSchema.methods.getmarks=async function(pid){
             
            
             for (let index = 0; index < paper.qs.length; index++) {
-                const mans = data.get(`${index}`);
-                const tpq=timeData.get(`${index}`)
+                const mans = data[`${index}`];
+                const tpq=timeData[`${index}`]
                 const questionId=paper.qs[index]
-                const q=await Question.findById(questionId)
+                const q = await Question.findById(questionId).catch(error => {
+                    console.log("Error fetching question:", error);
+                });
+                console.log("q",questionId)
                 if(mans.length==0){skip++}else{
                     if(q.type===0){
                         p[3]++;

@@ -15,12 +15,7 @@ const examrouter=require("./routers/exam");
 const DB="mongodb+srv://aditya:adi123@cluster0.pxaqtot.mongodb.net/?retryWrites=true&w=majority"
 var allowedOrigins = ['https://achieve-jee.onrender.com','http://localhost:8000'];
 
-if(cluster.isPrimary){
-    for (let i = 0; i < totalcpus; i++) {
-        cluster.fork()
-        
-    }
-}else{
+
     const app=express()
     app.use(cors());
     app.use(express.json())
@@ -99,7 +94,7 @@ if(cluster.isPrimary){
     httpserver.listen(PORT,"0.0.0.0",() =>{
         console.log(`connected at port ${PORT}`);
     });
-}
+
 
 
 
