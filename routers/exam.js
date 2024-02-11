@@ -133,11 +133,12 @@ let name = user.name;
       user.attempts.get(pid)[u-1].status=1;
       user.attempts.get(pid)[u-1].finishTime=Date.now()
       user.markModified('attempts');
-     user= await user.save()
+     await user.save()
      
-      if(u===1){
+      if(u===2){
 
           let data=await user.getmarks(pid)
+          console.log(data.time)
           if(image===""){
             image=" "
           }

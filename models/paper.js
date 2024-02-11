@@ -68,6 +68,8 @@ paperschema.methods.addAttempt = async function (uid,data,image,name) {
    const math=data.m
    const marks=data.p[0]+data.c[0]+data.m[0] 
    const time=data.time   
+   console.log("data",data)
+   
     const attempt = { uid,name,image,marks,phy,chem,math,time};
 
     // Add the attempt to the array
