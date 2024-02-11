@@ -118,7 +118,7 @@ router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
 
 
 
-router.post("/api/submit-answer",checkGuard,async (req,res)=>{
+router.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
     try {
         const {hashmaps,pid,time}=req.body
         
