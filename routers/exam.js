@@ -57,12 +57,13 @@ router.get("/api/start-paper/:id/:resume",checkGuard,auth,async (req,res)=>{
                    };
                    
                if(!user.attempts){
-                c=0
+               
                  user.attempts =new Map();
                  
                }
               
                if(!user.attempts.has(id)){
+                c=0
                  let a=[]
                  a.push(u)
                  console.log(a)
@@ -117,14 +118,14 @@ router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
 
 
 
-router.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
+router.post("/api/submit-answer",checkGuard,async (req,res)=>{
     try {
-        const {hashmaps,pid,time}=req.body
+        const {hashmaps,pid,time,uid}=req.body
         
-        const uid=req.user
+        // const uid=req.user
       let user=await User.findById(uid)
       let image = user.image;
-let name = user.name;
+        let name = user.name;
       let u=user.attempts.get(pid).length
       let paper=await Paper.findById(pid)
      

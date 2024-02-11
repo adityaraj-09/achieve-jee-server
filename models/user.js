@@ -155,8 +155,8 @@ userSchema.methods.getmarks=async function(pid){
     let r={}
     
     const paper=await Paper.findById(pid)
-    let timeData=this.attempts.get(pid)[1].time
-    let data=this.attempts.get(pid)[1].markedAns
+    let timeData=this.attempts.get(pid)[0].time
+    let data=this.attempts.get(pid)[0].markedAns
     
             let t=0
             let time=[0,0,0]
