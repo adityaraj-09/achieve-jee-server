@@ -135,7 +135,7 @@ let name = user.name;
       user.markModified('attempts');
      await user.save()
      
-      if(u===2){
+      if(u===1){
 
           let data=await user.getmarks(pid)
           console.log(data.time)
