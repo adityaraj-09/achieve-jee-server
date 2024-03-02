@@ -177,7 +177,7 @@ userSchema.methods.getmarks=async function(pid){
                     console.log("Error fetching question:", error);
                 });
                 console.log("q",questionId)
-                if(mans.length==0){skip++}else{
+                if(mans.length==0 || !mans){skip++}else{
                     if(q.type===0){
                         p[3]++;
                     }else if(q.type===1){

@@ -8,10 +8,11 @@ const adminrouter=express.Router();
 const checkGuard = require("../middlewares/checkmiddleware");
 const User = require("../models/user");
 
-adminrouter.post("/api/add-question",async (req,res)=>{
+adminrouter.post("/api/add-question",checkGuard,auth,async (req,res)=>{
     try {
+        console.log(req.body)
         const {type,marks,ans,imageurl,options,body,subject,paperId}=req.body;
-
+       
     const existingQ=await Question.findOne({
         body:body
        });
@@ -40,7 +41,7 @@ adminrouter.post("/api/add-question",async (req,res)=>{
        res.status(200).json({msg:"success"})
 
     } catch (error) {
-        res.status(500).json({msg:error.message});
+        res.status(500).json({msg:error});
     }
     
 })
