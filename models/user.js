@@ -177,47 +177,50 @@ userSchema.methods.getmarks=async function(pid){
                     console.log("Error fetching question:", error);
                 });
                 console.log("q",questionId)
-                if(mans.length==0 || !mans){skip++}else{
-                    if(q.type===0){
-                        p[3]++;
-                    }else if(q.type===1){
-                        c[3]++
-                    }else{
-                        m[3]++
-                    }
-                
-                const res=arraysAreEqual(q.ans,mans,q.type,q.marks,paper.partialMarking)
-                if(res.right){
-                   
-                    t=t+res.marks
-                   
-                    if(q.type===0){
-                        p[1]++
-                        p[0]=p[0]+res.marks
-                    }else if(q.type===1){
-                        c[1]++
-                
-                       c[0] =c[0]+res.marks
-                    }else{
-                        m[1]++
-                        m[0]=m[0]+res.marks
-                    }
-                }else{
-                   
-                    t=t+res.marks
-                    if(q.type===0){
-                        p[0]=p[0]+res.marks
-                        p[2]=p[2]+res.marks
+                if (mans){
 
-
-                    }else if(q.type===1){
-                       c[0] =c[0]+res.marks
-                       c[2] =c[2]+res.marks
+                    if(mans.length==0){skip++}else{
+                        if(q.type===0){
+                            p[3]++;
+                        }else if(q.type===1){
+                            c[3]++
+                        }else{
+                            m[3]++
+                        }
+                    
+                    const res=arraysAreEqual(q.ans,mans,q.type,q.marks,paper.partialMarking)
+                    if(res.right){
+                       
+                        t=t+res.marks
+                       
+                        if(q.type===0){
+                            p[1]++
+                            p[0]=p[0]+res.marks
+                        }else if(q.type===1){
+                            c[1]++
+                    
+                           c[0] =c[0]+res.marks
+                        }else{
+                            m[1]++
+                            m[0]=m[0]+res.marks
+                        }
                     }else{
-                        m[0]=m[0]+res.marks
-                        m[2]=m[2]+res.marks
-                    }
-                }}
+                       
+                        t=t+res.marks
+                        if(q.type===0){
+                            p[0]=p[0]+res.marks
+                            p[2]=p[2]+res.marks
+    
+    
+                        }else if(q.type===1){
+                           c[0] =c[0]+res.marks
+                           c[2] =c[2]+res.marks
+                        }else{
+                            m[0]=m[0]+res.marks
+                            m[2]=m[2]+res.marks
+                        }
+                    }}
+                }
 
                 if(tpq){
                     if(q.type===0){
