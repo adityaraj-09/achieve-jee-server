@@ -27,10 +27,16 @@ const transporter = nodemailer.createTransport({
 });
 
 const generateOTP = (userIdentifier) => {
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const timestamp = Date.now();
-  otpStore[userIdentifier] = { otp, timestamp };
-  return otp;
+  try {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const timestamp = Date.now();
+    console.log("----"+otpStore[userIdentifier])
+    otpStore[userIdentifier] = { otp, timestamp };
+    return otp;
+  } catch (error) {
+    console.log(error)
+  }
+ 
 };
 const emailTemplate = ejs.compile(fs.readFileSync(path.resolve(__dirname, 'email-template.ejs'), 'utf8'));
 const forgTemplate = ejs.compile(fs.readFileSync(path.resolve(__dirname, 'forgotpass-template.ejs'), 'utf8'))
@@ -55,7 +61,7 @@ function verifyOTP(userIdentifier, enteredOTP) {
   const storedOTP = otpStore[userIdentifier];
 
   if (!storedOTP) {
-    
+    console.log("--"+storedOTP.toString())
     return false;
   }
 
@@ -64,7 +70,7 @@ function verifyOTP(userIdentifier, enteredOTP) {
   const timeDifference = currentTime - timestamp;
 
   if (otp === enteredOTP && timeDifference <= 600000) { // 10 minutes in milliseconds
-
+    console.log("--"+timeDifference)
     return true;
   } else {
     console.log(parseInt(enteredOTP, 10))
@@ -78,8 +84,8 @@ function verifyOTP(userIdentifier, enteredOTP) {
 authrouter.post("/api/verify-Otp", checkGuard, async (req, res) => {
   try {
     const { otp, email, id } = req.body
-    console.log(otp)
-  const d = verifyOTP(email, parseInt(otp));
+    console.log(email+id)
+  const d = verifyOTP(email,otp);
   if (d) {
     delete otpStore[email]
     let user = await User.findById(id)
@@ -90,6 +96,7 @@ authrouter.post("/api/verify-Otp", checkGuard, async (req, res) => {
 
   res.status(500).json({ msg: "Invalid Otp or otp expired" })
   } catch (error) {
+    console.log(error)
     res.status(500).json({ msg: error.message })
   }
   
@@ -135,6 +142,7 @@ authrouter.post("/api/signup", checkGuard, async (req, res) => {
     
     res.status(200).json({...user._doc,token});
   } catch (error) {
+    console.log(error)
     res.status(500).json({ msg: error.message });
   }
 })
