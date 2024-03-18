@@ -22,9 +22,6 @@ var allowedOrigins = ['https://achieve-jee.onrender.com','http://localhost:8000'
     
     app.use(express.static('public'));
     app.set('view engine', 'ejs');
-    
-    
-    // Set the directory where your EJS templates are located
     app.set('views', __dirname + '/views'); 
     app.use(adminrouter)
     app.use(userrouter)

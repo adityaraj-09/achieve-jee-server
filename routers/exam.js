@@ -56,26 +56,23 @@ router.get("/api/start-paper/:id/:resume",checkGuard,auth,async (req,res)=>{
                      time:{}
                    };
                    
-               if(!user.attempts){
-               
-                 user.attempts =new Map();
-                 
-               }
-              
-               if(!user.attempts.has(id)){
-                c=0
-                 let a=[]
-                 a.push(u)
-                 console.log(a)
-                 user.attempts.set(id,a)
-               }else{
-                if(c===1){
+                   let isNewAttempt = false;
 
-                    user.attempts.get(id).push(u)
-                }
-               }
-                user=await user.save()
-                console.log(user)
+                   if (!user.attempts) {
+                       user.attempts = new Map();
+                       isNewAttempt = true;
+                   }
+   
+                   if (!user.attempts.has(id)) {
+                       isNewAttempt = true;
+                       user.attempts.set(id, []);
+                   }
+   
+                 
+                       user.attempts.get(id).push(u);
+                       await user.save();
+                       console.log("--pushed");
+                   
              }else{
                  return res.status(404).json({msg:"user not found"})
              }
@@ -134,18 +131,18 @@ router.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
       user.attempts.get(pid)[u-1].status=1;
       user.attempts.get(pid)[u-1].finishTime=Date.now()
       user.markModified('attempts');
-     await user.save()
+    user= await user.save()
      
-      if(u===1){
+      
 
           let data=await user.getmarks(pid)
-          console.log(data.time)
+          
           if(image===""){
             image=" "
           }
         
-          await paper.addAttempt(uid,data,image,name);
-      }
+          await paper.addAttempt(uid,data,image,name, user.attempts.get(pid)[u-1].startTime);
+      
 
       
      

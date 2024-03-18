@@ -38,6 +38,15 @@ const questionschema=mongoose.Schema({
         type:String,
         default:""
     },
+    optionImages:{
+        type:Array,
+        default:[]
+    },
+    timelimit:{
+        type:Number,
+        default:null
+    }
+    
     
 })
 

@@ -155,9 +155,9 @@ userSchema.methods.getmarks=async function(pid){
     let r={}
     
     const paper=await Paper.findById(pid)
-    let timeData=this.attempts.get(pid)[0].time
-    let data=this.attempts.get(pid)[0].markedAns
-    
+    let timeData=this.attempts.get(pid)[this.attempts.get(pid).length-1].time
+    let data=this.attempts.get(pid)[this.attempts.get(pid).length-1].markedAns
+
             let t=0
             let time=[0,0,0]
             let p=[0,0,0,0] //[marks,correctq,negativemarks,"attempted"]
@@ -180,9 +180,9 @@ userSchema.methods.getmarks=async function(pid){
                 if (mans){
 
                     if(mans.length==0){skip++}else{
-                        if(q.type===0){
+                        if(q.subject===0){
                             p[3]++;
-                        }else if(q.type===1){
+                        }else if(q.subject===1){
                             c[3]++
                         }else{
                             m[3]++
@@ -193,10 +193,10 @@ userSchema.methods.getmarks=async function(pid){
                        
                         t=t+res.marks
                        
-                        if(q.type===0){
+                        if(q.subject===0){
                             p[1]++
                             p[0]=p[0]+res.marks
-                        }else if(q.type===1){
+                        }else if(q.subject===1){
                             c[1]++
                     
                            c[0] =c[0]+res.marks
@@ -206,26 +206,26 @@ userSchema.methods.getmarks=async function(pid){
                         }
                     }else{
                        
-                        t=t+res.marks
-                        if(q.type===0){
-                            p[0]=p[0]+res.marks
-                            p[2]=p[2]+res.marks
+                        t=t-res.marks
+                        if(q.subject===0){
+                            p[0]=p[0]-res.marks
+                            p[2]=p[2]-res.marks
     
     
-                        }else if(q.type===1){
-                           c[0] =c[0]+res.marks
-                           c[2] =c[2]+res.marks
+                        }else if(q.subject===1){
+                           c[0] =c[0]-res.marks
+                           c[2] =c[2]-res.marks
                         }else{
-                            m[0]=m[0]+res.marks
-                            m[2]=m[2]+res.marks
+                            m[0]=m[0]-res.marks
+                            m[2]=m[2]-res.marks
                         }
                     }}
                 }
 
                 if(tpq){
-                    if(q.type===0){
+                    if(q.subject===0){
                         time[0]=time[0]+tpq
-                    }else if(q.type===1){
+                    }else if(q.subject===1){
                         time[1]=time[1]+tpq
                     }else{
                         time[2]=time[2]+tpq
