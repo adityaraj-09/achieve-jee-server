@@ -3,6 +3,7 @@ const express=require("express");
 const bcrypt=require("bcrypt")
 const Question=require("../models/question");
 const Paper=require("../models/paper");
+const Message=require("../models/message");
 const auth=require("../middlewares/authMiddleware")
 const adminrouter=express.Router();
 const checkGuard = require("../middlewares/checkmiddleware");
@@ -144,6 +145,13 @@ adminrouter.post("/password/:pass",async (req,res)=>{
 
 
 
-
+adminrouter.get("/api/messages",checkGuard ,async (req,res)=>{
+    try {
+        const msgs=await Message.find({})
+        res.status(200).json(msgs)
+    } catch (error) {
+        res.status(500).json({msg:error.message});
+    }
+})
 
 module.exports=adminrouter
