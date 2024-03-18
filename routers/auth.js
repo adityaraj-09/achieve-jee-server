@@ -79,7 +79,7 @@ authrouter.post("/api/verify-Otp", checkGuard, async (req, res) => {
   try {
     const { otp, email, id } = req.body
     console.log(otp)
-  const d = verifyOTP(email, otp);
+  const d = verifyOTP(email, parseInt(otp));
   if (d) {
     delete otpStore[email]
     let user = await User.findById(id)
