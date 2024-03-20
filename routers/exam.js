@@ -138,7 +138,7 @@ router.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
             image=" "
           }
         
-         paper= await paper.addAttempt(uid,data,image,name, user.attempts.get(pid)[u-1].startTime);
+         paper= await paper.addAttempt(uid,data,image,name, user.attempts.get(pid)[index].startTime);
       
 
       
