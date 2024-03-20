@@ -141,13 +141,13 @@ router.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
             image=" "
           }
         
-          await paper.addAttempt(uid,data,image,name, user.attempts.get(pid)[u-1].startTime);
+         paper= await paper.addAttempt(uid,data,image,name, user.attempts.get(pid)[u-1].startTime);
       
 
       
-     
+     let papers=await Paper.find({})
     
-      res.status(200).json(user)
+      res.status(200).json({user,papers})
        
     } catch (error) {
         console.log(error)
