@@ -117,24 +117,21 @@ router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
 
 router.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
     try {
-        const {hashmaps,pid,time}=req.body
+        const {hashmaps,pid,time,index}=req.body
         
         const uid=req.user
       let user=await User.findById(uid)
       let image = user.image;
         let name = user.name;
-      let u=user.attempts.get(pid).length
+     
       let paper=await Paper.findById(pid)
      
-      user.attempts.get(pid)[u-1].markedAns= hashmaps;
-      user.attempts.get(pid)[u-1].time= time;
-      user.attempts.get(pid)[u-1].status=1;
-      user.attempts.get(pid)[u-1].finishTime=Date.now()
+      user.attempts.get(pid)[index].markedAns= hashmaps;
+      user.attempts.get(pid)[index].time= time;
+      user.attempts.get(pid)[index].status=1;
+      user.attempts.get(pid)[index].finishTime=Date.now()
       user.markModified('attempts');
     user= await user.save()
-     
-      
-
           let data=await user.getmarks(pid)
           
           if(image===""){
@@ -157,7 +154,7 @@ router.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
 
 
 
-router.get("/api/pause-paper",checkGuard,auth,async (req,res)=>{
+router.post("/api/pause-paper",checkGuard,auth,async (req,res)=>{
     try {
         const {hashmaps,pid,time}=req.body
       
