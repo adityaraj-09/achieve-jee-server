@@ -156,17 +156,18 @@ router.post("/api/submit-answer",checkGuard,auth,async (req,res)=>{
 
 router.post("/api/pause-paper",checkGuard,auth,async (req,res)=>{
     try {
-        const {hashmaps,pid,time}=req.body
+        const {hashmaps,pid,time,index}=req.body
       
       const uid=req.user
       let user=await User.findById(uid)
       let u=user.attempts.get(pid).length
-      user.attempts.get(pid)[u-1].markedAns= hashmaps;
-      user.attempts.get(pid)[u-1].time= time;
-      user.attempts.get(pid)[u-1].status= 2;
-      user.attempts.get(pid)[u-1].finishTime=Date.now()
+      user.attempts.get(pid)[index].markedAns= hashmaps;
+      user.attempts.get(pid)[index].time= time;
+      user.attempts.get(pid)[index].status= 2;
+      user.attempts.get(pid)[index].finishTime=Date.now()
       user= await user.save()
-      res.status(200).json(user)
+      let papers=await Paper.find({})
+      res.status(200).json({user,papers})
       
     } catch (error) {
         res.status(500).json({msg:error.message});
