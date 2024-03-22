@@ -1,6 +1,7 @@
 const mongoose=require("mongoose");
 const express=require("express");
 const bcrypt=require("bcrypt")
+const jwt = require("jsonwebtoken")
 const Question=require("../models/question");
 const Paper=require("../models/paper");
 const auth=require("../middlewares/authMiddleware");
@@ -8,6 +9,7 @@ const User = require("../models/user");
 const checkGuard = require("../middlewares/checkmiddleware");
 const router=express.Router();
 
+const cachedPapers={}
 router.get("/api/get-paper/:id",checkGuard,auth,async (req,res)=>{
     try {
         let id=req.params
@@ -19,7 +21,6 @@ router.get("/api/get-paper/:id",checkGuard,auth,async (req,res)=>{
         res.status(500).json({error:error.message});
     }
 })
-
 router.get("/api/papers",checkGuard,auth,async (req,res)=>{
     try {
         const papers=await Paper.find()
@@ -38,13 +39,9 @@ router.get("/api/start-paper/:id/:resume",checkGuard,auth,async (req,res)=>{
         const qids=paper.qs
         let ques=[];
         let uid=req.user;
-        for (let i = 0; i < qids.length; i++) {
-            const q = await Question.findById(qids[i]) 
-            ques.push(q.toJSON())
-        }
-         if(resume==="false"){
+        if(resume==="false"){
 
-             let user=await User.findById(uid)
+            let user=await User.findById(uid)
              if(user){
      
                  let u = {
@@ -78,9 +75,37 @@ router.get("/api/start-paper/:id/:resume",checkGuard,auth,async (req,res)=>{
              }
          }
 
+        if(cachedPapers[id]){
+            let t=Date.now()
+            if(t-cachedPapers[id].time>43200000){
+                for (let i = 0; i < qids.length; i++) {
+                    const q = await Question.findById(qids[i]) 
+                    ques.push(q.toJSON())
+                }
+                cachedPapers[id]={
+                    time:t,
+                    qs:ques
+                }
+            }else{
+                ques=cachedPapers[id].qs;
+            }
+
+        }else{
+
+            for (let i = 0; i < qids.length; i++) {
+                const q = await Question.findById(qids[i]) 
+                ques.push(q.toJSON())
+            }
+            cachedPapers[id]={
+                time:Date.now(),
+                qs:ques
+            }
+            
+        }
         
         
-        res.status(200).json(ques)
+         const token = jwt.sign({ id:uid }, "adityaMalekith09", { expiresIn: '24h' });
+        res.status(200).json({ques,token})
         
     } catch (error) {
         console.log(error)
@@ -90,9 +115,6 @@ router.get("/api/start-paper/:id/:resume",checkGuard,auth,async (req,res)=>{
 })
 
 
-
-  
-  
 router.get("/api/get-marks/:pid",checkGuard,auth,async (req,res)=>{
     try {
     const {pid}=req.params
@@ -160,7 +182,7 @@ router.post("/api/pause-paper",checkGuard,auth,async (req,res)=>{
       
       const uid=req.user
       let user=await User.findById(uid)
-      let u=user.attempts.get(pid).length
+      
       user.attempts.get(pid)[index].markedAns= hashmaps;
       user.attempts.get(pid)[index].time= time;
       user.attempts.get(pid)[index].status= 2;
